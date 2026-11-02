@@ -7,32 +7,36 @@ description: Use only when creating architecture diagrams with Python's `diagram
 
 # Diagrams as Code
 
-## Repository comparison mode (takes precedence)
+## Repository workflow
 
 Adapted from sammcj/agentic-coding (Apache-2.0); see
-[source attribution](../SOURCES.md). Read and obey
-[the comparison contract](../COMPARISON.md). The upstream installation commands,
-`uv` dependency resolution, current-directory output, and custom-icon fetching
-are not permitted in comparison mode.
+[source attribution](../SOURCES.md). Follow the normal technical workflow below
+within [the shared scope and bookkeeping contract](../COMPARISON.md).
 
-1. Use `run_dir/diagrams-python/`. Require an existing Python interpreter,
-   an importable `diagrams` package, and Graphviz's `dot` on PATH. Check with
-   `python -c "import diagrams"` and `dot -V` (use `python3` if that is the
-   installed interpreter). Missing prerequisites are `blocked`; do not install.
-2. Independently author `diagram.py` using the API and bundled
-   [providers reference](./references/providers.md). Use only entities and
-   relationships explicitly present in the prompt. Never default an unspecified
-   provider to AWS/Azure/GCP. Use `diagrams.generic.blank.Blank` with the exact
-   supplied labels for provider-neutral nodes.
-3. Set `show=False`, `outformat="svg"`, and `filename` to the absolute path
-   `<run_dir>/diagrams-python/diagram` without an extension. Set the process
-   working directory to that backend directory so incidental files stay there.
-   Do not download custom icons or use PEP 723 to auto-install dependencies.
-4. Run that interpreter on `diagram.py` once. Require a zero exit code and a
-   nonempty, XML-parseable `diagram.svg`. Unsupported types/features are
-   `blocked`; execution or serialization errors are `failed`. Never substitute
-   Graphviz-only output or another backend, fix imports, or rerun.
-5. Record `diagram.py`, `diagram.svg`, and `status.json` under the contract.
+1. Work in `run_dir/diagrams-python/`. Select an existing Python environment
+   containing `diagrams` and a usable Graphviz `dot`. Check that environment with
+   `python -c "import diagrams"` and `dot -V` (or its interpreter's actual name).
+   An existing Graphviz installation may be added to this process's PATH;
+   do not persist machine changes. Missing prerequisites are `blocked`.
+2. Independently author `diagram.py` using the normal API, provider libraries,
+   and bundled [providers reference](./references/providers.md). Use suitable
+   provider icons only when the input identifies that provider/product; otherwise
+   use generic nodes/shapes without implying AWS/Azure/GCP or another platform.
+   Clusters, Graphviz layout attributes, edge styling, and custom local/downloaded
+   icons are allowed when they improve the requested diagram.
+3. Set `show=False` and `filename` to the absolute path
+   `<run_dir>/diagrams-python/diagram` without an extension. Choose the requested
+   `outformat`; otherwise use the normal PNG default, or SVG when better suited
+   to the diagram. Keep downloaded assets inside this backend directory.
+4. Run the script, inspect its rendered output with an available viewer, and fix
+   concrete import, layout, labeling, or routing problems before rerunning.
+   Verify successful execution, nonempty output, and format validity (parse SVG
+   as XML; inspect raster output with a suitable image viewer).
+5. Preserve the Python source and successful final image/export files and record
+   `status.json`. PEP 723 metadata is allowed for reproducibility, but automatic
+   `uv`/pip installation from upstream examples is not: use preinstalled
+   dependencies under the shared setup policy. Report unresolved unsupported
+   diagram types or missing tools instead of using a different backend.
 
 ## Upstream technical guidance
 

@@ -7,28 +7,35 @@ description: Create polished dark-themed architecture diagrams as self-contained
 
 # Architecture Diagram Skill
 
-## Repository comparison mode: raw SVG (takes precedence)
+## Repository workflow
 
 Adapted from Cocoon AI's architecture-diagram skill (MIT); see
-[source attribution](../SOURCES.md). Read and obey
-[the comparison contract](../COMPARISON.md). Reuse only the upstream SVG
-primitives, palette, typography, and spacing rules below.
+[source attribution](../SOURCES.md). Follow the normal technical workflow below
+within [the shared scope and bookkeeping contract](../COMPARISON.md).
 
-1. Use `run_dir/svg/`. Independently author a standalone `diagram.svg` directly
-   from the unchanged prompt. Do not use Mermaid, draw.io, Python Diagrams,
-   Figma, or another diagram generator to produce it.
-2. Use an `<svg xmlns="http://www.w3.org/2000/svg" viewBox="...">` root,
-   inline styles, native SVG shapes/text, and explicit connector arrowheads.
-   Use a local monospace font fallback. Escape XML text and attributes.
-3. Do not use the upstream HTML template, header, export toolbar, summary
-   cards, footer, animations, external fonts, CDN scripts, images, JavaScript,
-   `foreignObject`, or browser rendering/export. Do not add a legend or title
-   containing facts not supplied in the prompt.
-4. Parse the saved file with a local XML parser. Verify the root is SVG in
-   the SVG namespace, the viewBox has positive width/height, IDs are unique,
-   and marker references resolve. Parse/structure errors are `failed`;
-   do not repair or regenerate.
-5. Record `diagram.svg` and `status.json` according to the contract.
+1. Work in `run_dir/svg/` (the legacy directory name is retained). Use
+   `resources/template.html` to create the normal `diagram.html` deliverable with
+   inline SVG, styling, typography, and the export toolbar. Use a standalone
+   `diagram.svg` instead when the user explicitly requests standalone SVG.
+2. Customize the template to the supplied content. Remove example architecture,
+   unused cards, placeholder text, and irrelevant metadata. Presentation elements
+   such as a title or legend are welcome; summary cards may only restate supplied
+   diagram facts and must not become an unsolicited report.
+3. Browser preview, fonts, the template's pinned CDN export libraries, CSS
+   animations, and image/PDF export are allowed. Keep local font fallbacks so the
+   diagram remains readable offline. Do not add extra libraries without need.
+4. Validate embedded/standalone SVG structure: SVG namespace, positive viewBox
+   dimensions, unique IDs, and resolving marker references. When extracting an
+   SVG from HTML, serialize it with its SVG namespace. Open the HTML/SVG with an
+   available browser tool; a temporary local server is allowed if needed.
+5. Inspect text, connectors, bounds, contrast, and the requested export. Correct
+   defects and preview again. When an export is requested, produce and verify
+   the actual file; a toolbar button alone is not a completed export. Stop any
+   task-owned preview server afterward.
+6. Record the native HTML or standalone SVG, any requested successful exports,
+   and `status.json`. Disclose unavailable browser verification or export
+   dependencies instead of claiming they worked. Static HTML/SVG needs no build
+   system; browser export requires the template's dependencies to load.
 
 ## Upstream technical guidance
 

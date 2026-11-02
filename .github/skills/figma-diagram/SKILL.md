@@ -1,48 +1,72 @@
 ---
 name: figma-diagram
-description: "Use when create-diagrams requests the Figma MCP comparison output. Generate one FigJam diagram and persist its Mermaid source, returned link, and tool response."
+description: "Create a FigJam diagram through the official Figma MCP workflow, including supported layout, inspection, refinement, and diagram-specific annotations."
 user-invocable: false
 disable-model-invocation: true
 ---
 
-# Figma diagram comparison
+# Figma diagram workflow
 
 This is a repository adapter to Figma's official `generate_diagram` workflow,
 not a copy of the upstream skill (no redistribution license was declared).
-See [sources](../SOURCES.md). Read and obey
-[the comparison contract](../COMPARISON.md).
+See [sources](../SOURCES.md). Follow
+[the shared scope and bookkeeping contract](../COMPARISON.md).
 
 ## Prerequisites
 
 The official remote Figma MCP server must be enabled and already authenticated.
-The workspace configuration names it `figma`. The agent allows only its
-`generate_diagram` tool, not design-context, screenshots, code generation,
-canvas editing, or other servers' Figma tools.
+The repository MCP configuration names it `figma`; use the actual tools exposed
+by the configured official server. `generate_diagram` is the normal base route.
+Inspection, screenshots, and FigJam editing tools such as `get_figjam` or
+`use_figma` may be used when available and relevant to completing this diagram.
+Do not assume those optional tools are present or call unrelated code-generation
+or design workflows.
+
+## Technical guidance
+
+Consult the official [diagram guide](https://github.com/figma/mcp-server-guide/blob/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-generate-diagram/SKILL.md)
+and the relevant type reference before authoring. Its
+[architecture layout](https://github.com/figma/mcp-server-guide/blob/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-generate-diagram/references/architecture.md)
+and [hybrid workflow](https://github.com/figma/mcp-server-guide/blob/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-generate-diagram/references/workflow.md)
+are available when appropriate. These links are references, not vendored copies.
 
 ## Procedure
 
-1. Use `run_dir/figma/`. If `figma/generate_diagram` is unavailable or requires
-   authentication, record `blocked`; do not configure, authenticate, browse,
-   invoke a router, or substitute a different server.
-2. Independently translate the exact prompt into the Mermaid dialect accepted
-   by Figma: flowchart, sequence, state, ER, or Gantt. Preserve the requested
-   diagram type. Unsupported types (including class, C4, mindmap, pie, timeline,
-   and git graphs) or content requiring unsupported annotations/styling are
-   `blocked`, not approximated.
+1. Work in `run_dir/figma/`. Discover the official server's available tools and
+   actual schemas. If no supported authenticated route can create the requested
+   diagram, record `blocked`; do not configure or authenticate services.
+2. Independently translate the shared input into the supported diagram type.
+   `generate_diagram` accepts flowchart, sequence, state, ER, and Gantt syntax;
+   it is not a general Mermaid renderer. If a requested type is unsupported,
+   use a documented native FigJam route only when it can faithfully represent
+   that type and the necessary tools are available. Otherwise report `blocked`,
+   not a different diagram type.
 3. Use simple camelCase identifiers and quoted labels for special characters.
    The renderer does not accept HTML labels, emojis, or literal `\n` label
-   escapes. Sequence notes and Gantt styling are not preserved. If the prompt
-   requires those features, record `blocked` rather than silently dropping them.
-   Do not use the optional architecture-layout mode: it imposes additional
-   graph restrictions. Ordinary architecture flowcharts use the normal layout.
-4. Write the independently authored source as `diagram.mmd`. Call
-   `figma/generate_diagram` exactly once with the parameters exposed by its
-   actual schema. The documented required fields are `name` and
-   `mermaidSyntax`; use `name: "Diagram comparison"` and the saved source.
-   Do not create a file separately, pass a made-up file key, invoke
-   `use_figma`, or implement the upstream hybrid/enrichment workflow.
-5. Save the returned text exactly as `response.txt`. Extract only the returned
-   diagram URL and write `diagram.url` as a Windows Internet Shortcut:
+   escapes. Sequence notes and Gantt styling are not preserved by the base
+   renderer; use the documented hybrid FigJam workflow for required annotations
+   or colors rather than silently dropping them. If extension tools required
+   to meet the request are unavailable, report `blocked`, not an incomplete
+   diagram marked as successful.
+4. Choose the normal or architecture layout according to the official reference
+   and actual tool schema. Use architecture layout only when its graph and
+   direction constraints fit the input; never invent gateway nodes or alter
+   relationships to satisfy it. Normal flowchart layout remains an alternative.
+5. Save the independently authored Mermaid as `diagram.mmd`, or save the native
+   authoring script when using a documented direct FigJam route. Call the real
+   tool using its schema. `generate_diagram` requires `name` and `mermaidSyntax`;
+   use a descriptive name. Do not create a separate file before this tool or
+   invent a `fileKey`.
+6. Inspect the returned diagram when appropriate tools are available. Correct
+   specific source/layout defects and regenerate if needed; use supported
+   FigJam extensions for annotations and styling that serve the request.
+   Reuse the actual returned `fileKey` for refinements in the same board. Only
+   replace nodes created during this run; do not delete pre-existing user work
+   or create a trail of unnecessary draft boards.
+7. Preserve each tool response unchanged (use numbered files for intermediate
+   responses and `response.txt` for the final one). Preserve extension scripts
+   and their responses too. Extract the actual returned diagram URL and write
+   `diagram.url` as a Windows Internet Shortcut:
 
    ```ini
    [InternetShortcut]
@@ -50,11 +74,14 @@ canvas editing, or other servers' Figma tools.
    ```
 
    Accept a returned HTTPS link on `figma.com` or `www.figma.com`, including
-   other diagram URL paths. Never fabricate a link or open it. A tool error or
-   a response with no diagram link is `failed`, not successful local output.
-6. Require all three files to exist and be nonempty before recording `created`
-   in `status.json`. Keep the tool's diagnostic response on failure, but list
-   no successful artifacts. Return only status and artifact paths.
+   other diagram URL paths. Never fabricate a link. Opening/inspecting the
+   selected cloud diagram is allowed. Resolve tool errors through the normal
+   workflow; an unresolved error or missing diagram link is `failed`.
+8. Require the actual authoring source, shortcut, and final response to exist
+   and be nonempty before recording `created` in `status.json`. Any requested
+   extension/export must also be completed and verified. Keep diagnostics on
+   failure without listing partial files as successful artifacts.
 
-The diagram lives in FigJam, not on disk. The local artifacts are its source,
-link, and response. No local image export is claimed or attempted.
+The editable diagram lives in FigJam. The local artifacts retain its source,
+link, and responses. A local image export is optional unless requested and
+requires an available supported export tool; never claim it exists otherwise.

@@ -7,26 +7,41 @@ description: "Always use when user asks to create, generate, draw, or design a d
 
 # Draw.io Diagram Skill
 
-## Repository comparison mode (takes precedence)
+## Repository workflow
 
 Adapted from jgraph/drawio-mcp (Apache-2.0); see [source attribution](../SOURCES.md).
-Read and obey [the comparison contract](../COMPARISON.md). In this repository,
-use only native XML authoring: this is a fixed supported route, not a fallback.
-The upstream Mermaid/CLI, MCP viewer, repair, auto-layout, icon lookup, browser,
-export, cleanup, and troubleshooting workflows below are out of scope.
+Follow the normal technical workflow below within
+[the shared scope and bookkeeping contract](../COMPARISON.md).
 
-1. Use `run_dir/drawio/`. No draw.io Desktop or MCP server is required.
-2. Read the bundled [XML essentials](./references/xml-essentials.md). Independently
-   write `diagram.drawio` as native mxGraphModel XML from the unchanged prompt.
-   Use built-in shapes; do not fetch shape libraries or use another backend.
-   If a required feature needs an unavailable library, report `blocked`.
-3. Parse the saved file with a local XML parser (on Windows, PowerShell:
-   `[xml](Get-Content -Raw -LiteralPath "<absolute diagram.drawio>")`).
-   Confirm unique cell IDs, root cells `0` and `1`, valid parent/source/target
-   references, and a geometry child for every vertex and edge. A parse or
-   structural failure is `failed`; do not run the upstream repair pass.
-4. Record `diagram.drawio` and `status.json`. Do not launch the editor or
-   produce previews, URLs, or extra formats.
+1. Work in `run_dir/drawio/`. Detect draw.io Desktop using the full platform
+   lookup below; an executable outside PATH is usable. Desktop enables Mermaid
+   conversion, supported automatic layout/routing, and image/PDF export. Check
+   the installed build's capabilities; older builds may lack some options.
+   An available draw.io MCP/editor route is also allowed.
+2. Choose the upstream route best suited to the requested diagram: Mermaid
+   conversion for standard diagram types, native XML for precise/custom
+   placement, or the supported inline MCP route. Read the bundled
+   [XML essentials](./references/xml-essentials.md) and relevant linked syntax
+   references as needed. Shape-library lookup, `scripts/find-shapes.js`, official
+   icon discovery, and the XML repair pass are allowed.
+3. Apply suitable layout/routing, render or open the result, inspect it, and
+   correct concrete defects. Use the upstream troubleshooting steps when needed.
+   Honor the requested output format. For local output, retain `diagram.drawio`
+   and any authoring source even when exporting `diagram.drawio.svg`, PNG, or PDF;
+   this overrides only the upstream instructions to delete editable sources.
+4. Validate XML structure (unique cell IDs, root cells `0` and `1`, resolving
+   parent/source/target references, and vertex/edge geometry) as well as the
+   rendered result when a viewer is available. Repair and rerender when needed.
+   For MCP output, retain its authoring input and actual returned link/response;
+   do not invent a local editable file or claim an unperformed image export.
+5. If Desktop/MCP is unavailable, the upstream XML route remains valid for a
+   native file request. Disclose the unavailable conversion/layout/rendering
+   capabilities. A requested export still requires a working exporter; report
+   `blocked` if no supported route can produce it.
+6. Record the actual native output/link, successful requested exports, and
+   `status.json`. Save MCP responses and any URL shortcut in this directory.
+   Use browser URLs or cloud viewers only under the contract's upload policy;
+   opening a local diagram in an installed editor does not require an upload.
 
 ## Upstream technical guidance
 

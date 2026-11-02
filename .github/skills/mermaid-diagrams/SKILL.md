@@ -7,23 +7,29 @@ description: Comprehensive guide for creating software diagrams using Mermaid sy
 
 # Mermaid Diagramming
 
-## Repository comparison mode (takes precedence)
+## Repository workflow
 
 Adapted from softaworks/agent-toolkit (MIT); see [source attribution](../SOURCES.md).
-Read and obey [the comparison contract](../COMPARISON.md) before the upstream
-technical guidance below. Do not follow the upstream "always diagram", research,
-online-editor, installation, iteration, or explanatory-output instructions.
+Follow the normal technical workflow below within
+[the shared scope and bookkeeping contract](../COMPARISON.md).
 
-1. Use `run_dir/mermaid/`. Require an already installed `mmdc` executable
-   (Mermaid CLI). If absent, write a `blocked` status; do not use `npx` to
-   download it, install anything, or call a hosted renderer.
-2. Independently author `diagram.mmd` from the exact prompt, using the relevant
-   bundled syntax reference below. Never read the Figma or draw.io source.
-3. Run `mmdc -i "<absolute diagram.mmd>" -o "<absolute diagram.svg>"` once.
-   The renderer's exit code is the syntax/render validation. A nonzero exit
-   code, missing file, or empty SVG is `failed`; do not repair or retry.
-4. Record the two artifacts and `status.json` as defined in the contract.
-   Do not create Markdown wrappers, extra diagrams, or other exports.
+1. Work in `run_dir/mermaid/`. Use an installed Mermaid CLI (`mmdc`), an
+   available local Mermaid preview/export tool, or an already available Docker
+   renderer/image. Do not install dependencies or pull images during a run.
+   If no available route can render the requested format, report `blocked`.
+2. Independently author `diagram.mmd` from the shared input. Use the relevant
+   bundled or official syntax references, themes, and supported layout engines.
+   Choose a layout appropriate to the graph rather than forcing one style.
+3. Render SVG by default, or the user's requested format, retaining the source.
+   A CLI example is
+   `mmdc -i "<absolute diagram.mmd>" -o "<absolute diagram.svg>"`.
+   Inspect the result with an available image/browser viewer. Correct syntax,
+   clipped labels, layout, contrast, or routing defects and rerender as needed.
+4. Record the source, final rendered output, and any requested wrapper/export in
+   `status.json`. Use `created` only after successful rendering and applicable
+   checks. Disclose unavailable visual inspection. A hosted editor is an option
+   only with permission to send the diagram there; no upload is needed for CLI
+   rendering. Do not create unrelated diagrams or explanatory documents.
 
 ## Upstream technical guidance
 

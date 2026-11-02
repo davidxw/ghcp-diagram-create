@@ -1,5 +1,12 @@
 # Excalidraw JSON Schema Reference
 
+## Comparison Sloppiness Default
+
+Unless the prompt explicitly requests a different sloppiness value, set
+`roughness: 0` on every element and `appState.currentItemRoughness: 0`.
+This is the leftmost **Architect** selection under **Sloppiness**, used for
+clean strokes when comparing Excalidraw with other tools.
+
 ## Color Palette
 
 ### Primary Colors
@@ -36,7 +43,7 @@
   "backgroundColor": "#dbeafe",
   "fillStyle": "solid",
   "strokeWidth": 2,
-  "roughness": 1,
+  "roughness": 0,
   "opacity": 100,
   "roundness": { "type": 3 }
 }
@@ -52,6 +59,7 @@
   "text": "Content here",
   "fontSize": 20,
   "fontFamily": 5,
+  "roughness": 0,
   "textAlign": "center",
   "verticalAlign": "middle",
   "strokeColor": "#1e40af",
@@ -71,6 +79,7 @@
   "points": [[0, 0], [100, 0]],
   "strokeColor": "#374151",
   "strokeWidth": 2,
+  "roughness": 0,
   "startArrowhead": null,
   "endArrowhead": "arrow"
 }
@@ -87,7 +96,8 @@
   "height": 120,
   "strokeColor": "#10b981",
   "backgroundColor": "#d1fae5",
-  "fillStyle": "solid"
+  "fillStyle": "solid",
+  "roughness": 0
 }
 ```
 
@@ -102,7 +112,8 @@
   "height": 100,
   "strokeColor": "#f59e0b",
   "backgroundColor": "#fef3c7",
-  "fillStyle": "solid"
+  "fillStyle": "solid",
+  "roughness": 0
 }
 ```
 
@@ -115,7 +126,8 @@
   "y": 100,
   "points": [[0, 0], [200, 100]],
   "strokeColor": "#374151",
-  "strokeWidth": 2
+  "strokeWidth": 2,
+  "roughness": 0
 }
 ```
 
@@ -131,6 +143,7 @@
   ],
   "appState": {
     "gridSize": null,
+    "currentItemRoughness": 0,
     "viewBackgroundColor": "#ffffff"
   },
   "files": {}

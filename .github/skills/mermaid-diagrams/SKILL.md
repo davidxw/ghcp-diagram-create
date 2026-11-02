@@ -16,17 +16,23 @@ Follow the normal technical workflow below within
 1. Work in `run_dir/mermaid/`. Use an installed Mermaid CLI (`mmdc`), an
    available local Mermaid preview/export tool, or an already available Docker
    renderer/image. Do not install dependencies or pull images during a run.
-   If no available route can render the requested format, report `blocked`.
+   If no available route can render the requested format and required PNG/JPG
+   preview, report `blocked`.
 2. Independently author `diagram.mmd` from the shared input. Use the relevant
    bundled or official syntax references, themes, and supported layout engines.
    Choose a layout appropriate to the graph rather than forcing one style.
 3. Render SVG by default, or the user's requested format, retaining the source.
    A CLI example is
    `mmdc -i "<absolute diagram.mmd>" -o "<absolute diagram.svg>"`.
-   Inspect the result with an available image/browser viewer. Correct syntax,
+   Also save `diagram.png`, for example with
+   `mmdc -i "<absolute diagram.mmd>" -o "<absolute diagram.png>"`.
+   Reuse a requested PNG/JPG output as the preview instead of duplicating it.
+   Decode and inspect the preview with an available image/browser viewer. Correct syntax,
    clipped labels, layout, contrast, or routing defects and rerender as needed.
-4. Record the source, final rendered output, and any requested wrapper/export in
-   `status.json`. Use `created` only after successful rendering and applicable
+4. Record the source, final rendered output, required PNG/JPG preview, and any
+   requested wrapper/export in `status.json`, including `preview` and
+   `tokens_used` per the shared contract. Retain the preview for the HTML run summary.
+   Use `created` only after successful rendering and applicable
    checks. Disclose unavailable visual inspection. A hosted editor is an option
    only with permission to send the diagram there; no upload is needed for CLI
    rendering. Do not create unrelated diagrams or explanatory documents.

@@ -20,7 +20,8 @@ by the configured official server. `generate_diagram` is the normal base route.
 Inspection, screenshots, and FigJam editing tools such as `get_figjam` or
 `use_figma` may be used when available and relevant to completing this diagram.
 Do not assume those optional tools are present or call unrelated code-generation
-or design workflows.
+or design workflows. A supported image-export/screenshot route or browser view
+of the actual returned board is required to save the PNG/JPG preview.
 
 ## Technical guidance
 
@@ -57,8 +58,11 @@ are available when appropriate. These links are references, not vendored copies.
    tool using its schema. `generate_diagram` requires `name` and `mermaidSyntax`;
    use a descriptive name. Do not create a separate file before this tool or
    invent a `fileKey`.
-6. Inspect the returned diagram when appropriate tools are available. Correct
-   specific source/layout defects and regenerate if needed; use supported
+6. Save a local PNG/JPG view of the actual returned diagram, normally `diagram.png`,
+   using a supported image export, screenshot response, or browser screenshot.
+   Save actual image bytes, not just a remote URL or tool attachment identifier.
+   Decode and inspect the complete diagram. Correct specific source/layout
+   defects and regenerate the preview if needed; use supported
    FigJam extensions for annotations and styling that serve the request.
    Reuse the actual returned `fileKey` for refinements in the same board. Only
    replace nodes created during this run; do not delete pre-existing user work
@@ -77,11 +81,15 @@ are available when appropriate. These links are references, not vendored copies.
    other diagram URL paths. Never fabricate a link. Opening/inspecting the
    selected cloud diagram is allowed. Resolve tool errors through the normal
    workflow; an unresolved error or missing diagram link is `failed`.
-8. Require the actual authoring source, shortcut, and final response to exist
-   and be nonempty before recording `created` in `status.json`. Any requested
-   extension/export must also be completed and verified. Keep diagnostics on
-   failure without listing partial files as successful artifacts.
+8. Require the actual authoring source, shortcut, final response, and validated
+   PNG/JPG preview to exist and be nonempty before recording `created` in
+   `status.json`, including `preview` and `tokens_used` per the shared contract.
+   Retain the preview for the HTML run summary. Any requested extension/export
+   must also be completed and verified. If no supported route can save the
+   preview, record `blocked` even when the board was created. Preserve the
+   returned board reference for diagnosis/reuse, without advertising success.
+   Keep diagnostics on failure without listing partial files as successful artifacts.
 
 The editable diagram lives in FigJam. The local artifacts retain its source,
-link, and responses. A local image export is optional unless requested and
-requires an available supported export tool; never claim it exists otherwise.
+link, responses, and a required local PNG/JPG preview. A cloud link alone does
+not complete the workflow; never claim an unsaved image exists.

@@ -28,12 +28,17 @@ within [the shared scope and bookkeeping contract](../COMPARISON.md).
    dimensions, unique IDs, and resolving marker references. When extracting an
    SVG from HTML, serialize it with its SVG namespace. Open the HTML/SVG with an
    available browser tool; a temporary local server is allowed if needed.
-5. Inspect text, connectors, bounds, contrast, and the requested export. Correct
-   defects and preview again. When an export is requested, produce and verify
-   the actual file; a toolbar button alone is not a completed export. Stop any
-   task-owned preview server afterward.
-6. Record the native HTML or standalone SVG, any requested successful exports,
-   and `status.json`. Disclose unavailable browser verification or export
+5. Always save a PNG/JPG view of the final HTML/SVG, normally `diagram.png`,
+   using a browser screenshot of the complete diagram or a working export.
+   Decode and inspect it for text, connectors, bounds, contrast, and clipping.
+   Correct defects and regenerate the image. When an export is requested,
+   produce and verify the actual file; a toolbar button alone is not a completed
+   export. Missing preview capability is `blocked`. Stop any task-owned preview
+   server afterward.
+6. Record the native HTML or standalone SVG, required PNG/JPG preview, any
+   requested successful exports, and `status.json`, including `preview` and
+   `tokens_used` per the shared contract. Retain the preview for the HTML run summary.
+   Disclose unavailable browser verification or export
    dependencies instead of claiming they worked. Static HTML/SVG needs no build
    system; browser export requires the template's dependencies to load.
 

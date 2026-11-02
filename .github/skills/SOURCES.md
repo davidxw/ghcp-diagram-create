@@ -106,7 +106,7 @@ not provide automatic graph layout or PNG/SVG rendering; those require normal
 authoring and a compatible viewer/exporter. This compares authoring workflows,
 not two different rendering engines.
 
-## Scope-only workflow adaptations
+## Repository workflow adaptations
 
 The [shared contract](./COMPARISON.md) keeps identical input, independent backend
 authoring, per-run output directories, honest statuses, and the requirement not
@@ -114,12 +114,16 @@ to invent facts or do unrelated work. It allows technical documentation/icon
 lookup, each skill's native output modes, conversion, automatic layout/routing,
 browser/editor inspection, temporary preview servers, repair, and refinement.
 There is no one-attempt limit or prohibition on normal diagram exports.
+Every successful backend now retains a validated PNG/JPG view alongside its
+native output. The dispatcher creates `index.html` instead of `prompt.txt`,
+preserving the exact prompt and summarizing statuses, previews, artifact links,
+and actual model/token metadata only when the host exposes it.
 
 As requested, tools must be preinstalled and services authenticated before a
 run; upstream install snippets and dependency-resolving launch commands are
 setup guidance, not authorization to install packages during diagram creation.
 Only explicitly supplied content sources are investigated. Unrelated domain
-research, architecture redesign, project changes, reports, recommendations,
+research, architecture redesign, project changes, domain reports, recommendations,
 and optional follow-up work remain excluded. Temporary preview processes are
 stopped at completion. Sources and successful final outputs are retained, and
 unsupported requests or reduced capabilities are reported rather than hidden.

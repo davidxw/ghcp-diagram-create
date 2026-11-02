@@ -28,18 +28,24 @@ Follow the normal technical workflow below within
    correct concrete defects. Use the upstream troubleshooting steps when needed.
    Honor the requested output format. For local output, retain `diagram.drawio`
    and any authoring source even when exporting `diagram.drawio.svg`, PNG, or PDF;
-   this overrides only the upstream instructions to delete editable sources.
+   this overrides the upstream instructions to delete editable sources.
+   Always save a PNG/JPG view, normally `diagram.png`, using Desktop export or
+   a compatible editor/MCP export or screenshot of the actual final diagram.
+   Reuse a requested PNG/JPG export when possible; decode and inspect the image.
 4. Validate XML structure (unique cell IDs, root cells `0` and `1`, resolving
    parent/source/target references, and vertex/edge geometry) as well as the
    rendered result when a viewer is available. Repair and rerender when needed.
    For MCP output, retain its authoring input and actual returned link/response;
    do not invent a local editable file or claim an unperformed image export.
-5. If Desktop/MCP is unavailable, the upstream XML route remains valid for a
-   native file request. Disclose the unavailable conversion/layout/rendering
-   capabilities. A requested export still requires a working exporter; report
-   `blocked` if no supported route can produce it.
-6. Record the actual native output/link, successful requested exports, and
-   `status.json`. Save MCP responses and any URL shortcut in this directory.
+5. If Desktop/MCP is unavailable, the upstream XML route remains valid for
+   native authoring, but `created` still requires the PNG/JPG preview. Disclose
+   unavailable conversion/layout/rendering capabilities. Use an available
+   compatible viewer for the preview; report `blocked` if no supported route
+   can produce it or an explicitly requested export. XML alone is not success.
+6. Record the actual native output/link, required PNG/JPG preview, successful
+   requested exports, and `status.json`, including `preview` and `tokens_used`
+   per the shared contract. Retain the preview for the HTML run summary.
+   Save MCP responses and any URL shortcut in this directory.
    Use browser URLs or cloud viewers only under the contract's upload policy;
    opening a local diagram in an installed editor does not require an upload.
 

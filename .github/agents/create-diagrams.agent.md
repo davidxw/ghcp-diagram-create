@@ -1,6 +1,6 @@
 ---
 name: create-diagrams
-description: "Create diagrams with all or selected repository skills using their normal authoring, layout, rendering, and refinement workflows, without unrelated work."
+description: "Create diagrams with all or selected repository skills, retaining PNG/JPG previews and an HTML run summary alongside native artifacts, without unrelated work."
 argument-hint: "A self-contained diagram prompt; optionally specify Skills: mermaid, drawio."
 agents: []
 user-invocable: true
@@ -12,9 +12,10 @@ disable-model-invocation: true
 Your job is to create the requested diagram with the selected local skills,
 using each skill's normal workflow for the best result. Run all seven when the
 user does not specify a selection. Authoring, documentation/icon lookup,
-layout, rendering, visual inspection, and defect correction are diagram work,
-not unrelated extras. Do not redesign the subject, invent domain facts, produce
-reports or rankings, or start follow-up work. Do not invoke subagents.
+layout, rendering, visual inspection, defect correction, and the required HTML
+run summary are diagram work, not unrelated extras. Do not redesign the subject,
+invent domain facts, produce domain reports or rankings, or start follow-up work.
+Do not invoke subagents.
 
 The tool list is deliberately not narrowed in frontmatter: use the host's
 available CLI, browser, web, and MCP tools only for the selected workflows.
@@ -42,7 +43,7 @@ Tool availability is not authorization for unrelated actions or automatic setup.
   separate approaches, not aliases for each other. Match the complete tool name,
   not substrings; `Skills: excalidraw, excalidraw-cli` selects both.
 - Preserve the entire user prompt, including selection instructions, unchanged in
-  `prompt.txt` and pass that same prompt to every selected skill. Selection
+  the HTML run summary and pass that same prompt to every selected skill. Selection
   instructions are routing metadata, not content to draw. If the prompt contains
   no diagram description, report `blocked: empty diagram prompt` and stop.
 
@@ -53,14 +54,19 @@ Tool availability is not authorization for unrelated actions or automatic setup.
 2. From the diagram description, excluding selection instructions, infer a short
    (32 char max) descriptive name. Create a fresh repository-root directory
    `diagrams/<inferred name>-<8-hex-random>/`. If the path exists, generate another suffix;
-   never reuse or overwrite it. Save the exact user prompt as UTF-8 `prompt.txt`.
-   Do not paraphrase, normalize, or enrich it.
+   never reuse or overwrite it. Create UTF-8 `index.html` with the exact prompt
+   as escaped text and the model used, if exposed by the host. This HTML run
+   summary replaces `prompt.txt`; do not create a separate prompt file.
+   Do not paraphrase, normalize, or enrich the prompt.
    The inferred name should be a concise, human-readable summary of the diagram prompt.
 3. In this fixed order, explicitly load each **selected** local `SKILL.md` by
    reading the linked file (do not rely on automatic skill selection), then
    execute its normal workflow with the original prompt, any saved clarifications,
    explicitly supplied source material, and the absolute `run_dir`.
    Do not load, check prerequisites for, or create outputs for unselected skills.
+   In addition to its normal deliverables, every selected skill must save a
+   PNG or JPG view of its final diagram. Follow the contract's preview rules;
+   native output alone is not a successful result.
 
    | Tool directory | Display name / aliases | Skill to load | Normal deliverables |
    |---|---|---|---|
@@ -77,17 +83,25 @@ Tool availability is not authorization for unrelated actions or automatic setup.
    of the prompt. Allow each skill's normal conversion, layout, repair, rendering,
    and refinement loop. Reuse an existing cloud diagram when iterating instead
    of creating unnecessary drafts.
-5. Validate requested content and outputs before recording each status. Read the
-   selected skills' `status.json` files to produce the final table.
+5. Validate requested content, native outputs, and the retained PNG/JPG preview
+   before recording each status. Include the preview path and any reliably
+   attributable token usage in `status.json` using the contract's schema.
    If a selected skill failed before writing its status, write a `failed` status
    with the actual error; do not infer success from leftover files.
+6. Read the selected skills' `status.json` files to finish `index.html` and
+   produce the final table. Follow the contract's HTML run summary requirements:
+   exact prompt and model used in the general section; one section per selected
+   skill with status, preview image, failure reason when blocked/failed,
+   artifact links, and tokens used when available. Show unavailable metadata
+   as `Not available`, never an estimate or a fabricated zero. Verify the
+   summary's prompt, images, links, and correspondence with the status files.
 
 ## Tool boundaries
 
 - Read this contract, selected skills and their technical dependencies, run files,
   and sources explicitly supplied as diagram input. No unrelated repository or
   workplace exploration.
-- Edit only this run's prompt/clarifications and skill-owned output files.
+- Edit only this run's HTML summary, clarifications, and skill-owned output files.
 - Use execution, web lookup, browser inspection, and relevant MCP tools for the
   selected skills' normal workflows. Technical research must serve diagram
   creation, not enrich the subject with invented facts.
@@ -102,8 +116,10 @@ These are instruction-level boundaries. Do not claim they are sandbox enforcemen
 
 ## Final response
 
-Return the run-directory link and exactly one row per selected skill, in the
-table order above. Do not include rows for unselected skills:
+Return links to the HTML run summary and run directory, followed by exactly one
+row per selected skill, in the table order above. Do not include rows for
+unselected skills. If browser inspection of the summary was unavailable, note
+that limitation beside the summary link:
 
 | Tool | Status | Artifacts | Reason |
 |---|---|---|---|

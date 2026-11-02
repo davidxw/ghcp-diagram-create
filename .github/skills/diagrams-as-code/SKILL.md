@@ -27,13 +27,17 @@ within [the shared scope and bookkeeping contract](../COMPARISON.md).
 3. Set `show=False` and `filename` to the absolute path
    `<run_dir>/diagrams-python/diagram` without an extension. Choose the requested
    `outformat`; otherwise use the normal PNG default, or SVG when better suited
-   to the diagram. Keep downloaded assets inside this backend directory.
+   to the diagram. Always retain a PNG/JPG preview: reuse the PNG default, or
+   include PNG alongside a non-raster output, for example `outformat=["svg", "png"]`.
+   Keep downloaded assets inside this backend directory.
 4. Run the script, inspect its rendered output with an available viewer, and fix
    concrete import, layout, labeling, or routing problems before rerunning.
    Verify successful execution, nonempty output, and format validity (parse SVG
-   as XML; inspect raster output with a suitable image viewer).
-5. Preserve the Python source and successful final image/export files and record
-   `status.json`. PEP 723 metadata is allowed for reproducibility, but automatic
+   as XML; decode the required PNG/JPG and inspect it with a suitable image viewer).
+5. Preserve the Python source, required PNG/JPG preview, and successful final
+   image/export files and record `status.json`, including `preview` and
+   `tokens_used` per the shared contract. Retain the preview for the HTML run summary.
+   PEP 723 metadata is allowed for reproducibility, but automatic
    `uv`/pip installation from upstream examples is not: use preinstalled
    dependencies under the shared setup policy. Report unresolved unsupported
    diagram types or missing tools instead of using a different backend.

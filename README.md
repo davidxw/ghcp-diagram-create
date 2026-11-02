@@ -12,12 +12,17 @@ giving seven approaches in total. See the
 | Tool | Repository skill | Approach | Required setup | Successful output |
 |---|---|---|---|---|
 | Mermaid | [mermaid-diagrams](.github/skills/mermaid-diagrams/SKILL.md) | Mermaid code + local renderer | Node.js + Mermaid CLI (`mmdc`) with its browser dependencies, or another available local Mermaid renderer | Mermaid source + SVG by default, or requested rendered format |
-| Draw.io | [drawio](.github/skills/drawio/SKILL.md) | XML/Mermaid + CLI or MCP | **draw.io Desktop recommended** for Mermaid conversion, automatic layout/routing, and SVG/PNG/PDF export; Node.js 18+ for the bundled shape lookup, XML repair, and URL helpers. An available draw.io MCP/editor route is also supported | Editable `.drawio` or MCP diagram, plus requested exports; XML-only authoring remains a disclosed fallback without Desktop |
+| Draw.io | [drawio](.github/skills/drawio/SKILL.md) | XML/Mermaid + CLI or MCP | **draw.io Desktop recommended** for Mermaid conversion, automatic layout/routing, and SVG/PNG/PDF export; Node.js 18+ for the bundled shape lookup, XML repair, and URL helpers. An available draw.io MCP/editor route is also supported | Editable `.drawio` or MCP diagram, plus PNG/JPG preview and requested exports; XML-only authoring also needs a compatible preview renderer |
 | Architecture HTML+SVG | [architecture-diagram](.github/skills/architecture-diagram/SKILL.md) | Native HTML/SVG generation | Modern browser for preview; browser tooling for automated inspection/export. Internet access for the template's Google Font and CDN export libraries | Styled HTML with inline SVG and export toolbar; standalone SVG or PNG/PDF when requested |
-| Excalidraw | [excalidraw-diagram](.github/skills/excalidraw-diagram/SKILL.md) | Native JSON generation | Local JSON parsing for native authoring; compatible Excalidraw viewer/exporter for previews and exports. Obsidian + Excalidraw plugin only for explicitly requested Obsidian output | Standard `.excalidraw` by default; Obsidian `.md` or Animated `.excalidraw` when explicitly requested; Sloppiness defaults to **Architect** (leftmost, `roughness: 0`) for comparison with other tools |
+| Excalidraw | [excalidraw-diagram](.github/skills/excalidraw-diagram/SKILL.md) | Native JSON generation | Local JSON parsing for native authoring; compatible Excalidraw viewer/exporter or browser workflow required for the PNG/JPG preview. Obsidian + Excalidraw plugin only for explicitly requested Obsidian output | Standard `.excalidraw` by default; Obsidian `.md` or Animated `.excalidraw` when explicitly requested; Sloppiness defaults to **Architect** (leftmost, `roughness: 0`) for comparison with other tools |
 | Diagrams (Python) | [diagrams-as-code](.github/skills/diagrams-as-code/SKILL.md) | Python code + Graphviz | Python environment containing `diagrams` + Graphviz (`dot`); network access only when custom icons are needed | Python source + PNG by default, or SVG/another supported requested format |
-| Figma MCP | [figma-diagram](.github/skills/figma-diagram/SKILL.md) | External MCP | Official remote Figma MCP server, authenticated; `generate_diagram` for the base route, optional inspection/FigJam editing/export tools for supported extensions | Authoring source + FigJam link + tool responses; requested annotations/exports when supported |
-| Excalidraw-cli | [excalidraw-cli](.github/skills/excalidraw-cli/SKILL.md) | JSON + CLI authoring | Node.js 18+ and installed `excalidraw-cli`; compatible viewer/exporter for previews and images | Element JSON + CLI-generated Standard `.excalidraw`; defaults to Sloppiness **Architect** (`roughness: 0`); requested exports require a separate compatible exporter |
+| Figma MCP | [figma-diagram](.github/skills/figma-diagram/SKILL.md) | External MCP | Official remote Figma MCP server, authenticated; `generate_diagram` for the base route; supported image export/screenshot or browser access to the actual board for the preview; optional FigJam editing tools for extensions | Authoring source + FigJam link + tool responses + local PNG/JPG preview; requested annotations/exports when supported |
+| Excalidraw-cli | [excalidraw-cli](.github/skills/excalidraw-cli/SKILL.md) | JSON + CLI authoring | Node.js 18+ and installed `excalidraw-cli`; compatible viewer/exporter or browser workflow required for the PNG/JPG preview | Element JSON + CLI-generated Standard `.excalidraw`; defaults to Sloppiness **Architect** (`roughness: 0`); image rendering requires a separate compatible viewer/exporter |
+
+Every successful backend retains a PNG or JPG view of its final diagram in
+addition to the native deliverables above, even when another format is requested.
+An existing final PNG/JPG export is reused rather than duplicated. Each run also
+produces an offline-readable HTML summary with these previews and artifact links.
 
 Install prerequisites before running the agent. For example, on Windows:
 
@@ -37,8 +42,9 @@ python -m pip install diagrams
   provides an editable preview inside VS Code.
 - Only for explicitly requested Excalidraw Obsidian output, install [Obsidian](https://obsidian.md/) and its
   [Excalidraw community plugin](https://obsidian.md/plugins?id=obsidian-excalidraw-plugin).
-  Standard JSON authoring does not need these. Image or animation exports need
-  a compatible viewer/exporter; animation metadata alone is not a video export.
+  Standard JSON authoring does not need these. The required raster preview and
+  any image or animation exports need a compatible viewer/exporter or browser
+  workflow; animation metadata alone is not a video export.
 - Excalidraw-cli is a separate CLI-assisted authoring approach, not the direct
   Excalidraw skill and not an automatic layout or image-rendering engine. It
   supports label shorthand and local checkpoints, kept inside the run directory.
@@ -121,14 +127,17 @@ Normal diagram work includes technical references, icon discovery, format
 conversion, automatic layout/routing, editor/browser previews, rendering,
 repair, and refinement of concrete defects. The agent stops when the diagram
 meets the request and its checks pass. It does not redesign the architecture,
-invent components, generate reports or rankings, or do follow-up work.
+invent components, generate domain reports or rankings, or do follow-up work.
+The HTML run summary is required output bookkeeping, not a domain report.
 
 A supported alternative within the same backend is allowed, such as native
 draw.io XML without Desktop, with any reduced capabilities disclosed. Missing
 required setup or unsupported features produce `blocked`; unresolved execution
 or validation errors produce `failed`. Recoverable errors can be fixed and
 retried. Remaining selected skills still run; none is silently replaced with
-another backend. Not every tool supports every diagram type: Python Diagrams
+another backend. A native file or cloud link without the required PNG/JPG view
+is not `created`: unavailable preview tooling makes that backend `blocked`.
+Not every tool supports every diagram type: Python Diagrams
 primarily targets architecture, while Figma's generator supports only a subset
 of Mermaid and may need optional FigJam tools for annotations.
 
@@ -198,28 +207,54 @@ Every invocation creates a new directory under repository-root `diagrams/`:
 
 ```text
 diagrams/<inferred name>-<random-suffix>/
-  prompt.txt
+  index.html         (run summary, including the exact original prompt)
   clarifications.txt  (only if clarification was needed)
-  mermaid/          diagram.mmd, diagram.svg (or requested format), status.json
-  drawio/           diagram.drawio (or MCP source/link), requested exports, status.json
-  svg/              diagram.html (or requested standalone SVG), exports, status.json
-  excalidraw/       diagram.md / diagram.excalidraw / diagram.animate.excalidraw, status.json
+  mermaid/          diagram.mmd, diagram.svg (or requested format), diagram.png, status.json
+  drawio/           diagram.drawio (or MCP source/link), diagram.png, requested exports, status.json
+  svg/              diagram.html (or requested standalone SVG), diagram.png, exports, status.json
+  excalidraw/       diagram.md / diagram.excalidraw / diagram.animate.excalidraw, diagram.png, status.json
   diagrams-python/ diagram.py, diagram.png (or chosen format), status.json
-  figma/            authoring source, diagram.url, response.txt, status.json
-  excalidraw-cli/   elements.json, diagram.excalidraw, status.json
+  figma/            authoring source, diagram.url, response.txt, diagram.png, status.json
+  excalidraw-cli/   elements.json, diagram.excalidraw, diagram.png, status.json
 ```
 
 The layout above illustrates normal outputs, not a requirement to export every
-format. Only selected backends get
+format. PNG/JPG previews are mandatory; a final JPG or differently named PNG
+export can replace the illustrated `diagram.png`. Python output in a non-raster
+format must also include the preview. Only selected backends get
 directories and status files, even if blocked or failed; unselected backends
 are not loaded or checked. Error diagnostics go in that backend's `error.txt`;
 partial files are retained but are not reported as successful artifacts. The
-final response is only a status/artifact table with one row per selected skill.
+final response links the HTML summary and run directory, followed by a
+status/artifact table with one row per selected skill.
 Sources and native editable files are retained, even when exporting an image.
-Not every backend has a local image preview. A `created` result must include
-the chosen native deliverable and every explicitly requested export. Its reason
-field discloses material limitations, such as unavailable visual inspection,
-instead of claiming checks that were not performed.
+A `created` result must include the chosen native deliverable, a decoded and
+inspected PNG/JPG preview, and every explicitly requested export. Final previews
+are kept during cleanup. The `status.json` fields include `preview` (a local
+artifact path, or `null` for blocked/failed results) and `tokens_used` (an exact
+backend-attributable integer, or `null` when unavailable). Its reason field
+discloses material limitations instead of claiming checks that were not performed.
+
+### HTML run summary
+
+`index.html` replaces `prompt.txt` for new runs; existing runs are not migrated.
+It is created at the start to preserve the original prompt, then completed using
+the selected backends' final status files. It contains:
+
+- **General:** the entire unchanged prompt, including selection instructions,
+  plus the actual model used when the host exposes it.
+- **For each selected skill:** status, saved preview image, blocked/failed reason
+  or material caveats, links to generated artifacts (including the actual cloud
+  diagram where applicable), and tokens used when reliably available.
+
+Unknown model or token metadata is labelled **Not available**, not guessed,
+estimated, or replaced with zero. Shared/session token totals are not allocated
+across skills. Blocked/failed results have an explicit unavailable-preview label,
+not a broken image or links claiming partial output as successful artifacts.
+The summary uses escaped prompt text, relative local artifact/image links, and
+inline styling with no external dependencies. It opens locally without uploading
+the prompt or artifacts. Browser inspection checks the summary where available;
+any unavailable summary-browser verification is disclosed in the final response.
 
 The Figma `.url` file is a local shortcut, not a local copy of the editable board.
 Tool responses are preserved unchanged. Refinements reuse the actual board/file
@@ -242,7 +277,8 @@ To check behavior in your own Copilot environment:
 
 - Run the first three-node prompt above without a selection; expect seven status
   files and the same three labels/two relationships wherever the backend
-  succeeds.
+  succeeds, plus a retained PNG/JPG for every `created` backend and one HTML
+  summary section per selected skill.
 - Use `Skills: mermaid, draw.io`; expect only two status files and two table
   rows, with no Figma call or directories for unselected skills.
 - Select one skill by its linked skill name; expect one status file and one row.
@@ -255,6 +291,8 @@ To check behavior in your own Copilot environment:
   supported conversion/layout/export tools rather than forcing manual XML.
 - Request an image export with Desktop absent; do not accept XML alone as a
   successful export unless another supported exporter actually produced it.
+- Without preview/export capability, expect `blocked` even when native authoring
+  works. A cloud link, export button, or SVG renamed to `.png` is not a raster view.
 - Verify architecture output uses the HTML template and can be previewed; ask
   for standalone SVG explicitly to test that route.
 - Verify Excalidraw's requested mode, native-file validity, and `roughness: 0`
@@ -272,9 +310,16 @@ To check behavior in your own Copilot environment:
 - Give a diagram with a concrete layout defect; verify the skill may repair,
   rerender, and inspect it rather than failing after one attempt.
 - Use an ambiguous prompt; expect a focused clarification, not invented content.
-- Confirm each run has a new directory and the original prompt is unchanged.
+- Confirm each run has a new directory, `index.html` replaces `prompt.txt`, and
+  the decoded prompt text is unchanged, including whitespace, selection metadata,
+  and HTML-sensitive characters such as `<`, `&`, and quotes.
+- Open the HTML summary; verify all selected sections appear in order, image and
+  artifact links resolve, blocked/failed reasons are shown without broken images,
+  and unknown model/token values display `Not available`. Do not accept
+  estimates or shared session totals as per-skill token counts.
 - Confirm temporary preview processes are stopped and no unrelated files,
-  reports, recommendations, or extra diagrams are produced.
+  domain reports, recommendations, or extra diagrams are produced. Required final
+  PNG/JPG previews must survive cleanup.
 
 Customizations can be checked statically, but successful rendering and strict
 instruction adherence must also be tested in the intended Copilot harness with

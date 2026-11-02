@@ -23,8 +23,8 @@ Follow the normal technical workflow below within
    template, design rules, and [schema reference](./references/excalidraw-schema.md).
    Preserve labels exactly; escape quotes/parentheses using JSON syntax,
    not the upstream substitutions. An available compatible editor/rendering tool
-   may assist creation, preview, or requested export; it is not mandatory for
-   authoring the native JSON/Markdown file.
+   may assist authoring. A compatible viewer/exporter or browser workflow is
+   required to save the PNG/JPG preview, even for native JSON/Markdown output.
 3. Default every element to `roughness: 0`: the leftmost **Architect**
    selection under **Sloppiness**, with clean strokes for comparison with
    other tools. Also set `appState.currentItemRoughness: 0` so newly drawn
@@ -38,13 +38,17 @@ Follow the normal technical workflow below within
    `appState.currentItemRoughness` match the default or explicitly requested
    sloppiness. In Animated mode, also check animation order/duration metadata.
    Correct invalid data and revalidate rather than stopping at the first defect.
-5. Preview with an available compatible editor, renderer, or browser workflow.
-   Inspect text, bindings, arrows, spacing, and bounds; refine as needed. Obsidian
+5. Save a PNG/JPG view of the final native diagram, normally `diagram.png`,
+   with an available compatible editor, renderer, or browser workflow.
+   Decode the image and inspect text, bindings, arrows, spacing, and bounds;
+   refine and regenerate as needed. Missing preview capability is `blocked`. Obsidian
    viewing requires its Excalidraw plugin; native Standard authoring does not
    require an installed application. Follow the shared permission policy before
    uploading to a hosted editor. Requested image/animation exports require a
    working compatible exporter, not just animation metadata or a link.
-6. Record the chosen native file, requested successful exports, and `status.json`.
+6. Record the chosen native file, required PNG/JPG preview, requested successful
+   exports, and `status.json`, including `preview` and `tokens_used` per the shared
+   contract. Retain the preview for the HTML run summary.
    Disclose unavailable visual inspection. Use the backend directory instead of
    upstream current-directory defaults, and omit unsolicited explanatory output.
 

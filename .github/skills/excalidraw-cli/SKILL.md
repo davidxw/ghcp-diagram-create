@@ -24,8 +24,9 @@ Follow [the shared scope and bookkeeping contract](../COMPARISON.md).
 - Consult the pinned [upstream skill](https://github.com/ahmadawais/excalidraw-cli/blob/d62ab7af3d7e7985724e80fa64a2253771a2513a/skills/skill.md)
   and [implementation](https://github.com/ahmadawais/excalidraw-cli/blob/d62ab7af3d7e7985724e80fa64a2253771a2513a/src/lib/elements.ts)
   when the installed reference leaves a concrete question unresolved.
-- A compatible Excalidraw viewer/exporter is needed for visual inspection and
-  image exports. The CLI itself neither renders PNG/SVG nor calculates automatic
+- A compatible Excalidraw viewer/exporter or browser workflow is required to save
+  the PNG/JPG preview as well as perform visual inspection and requested image
+  exports. The CLI itself neither renders PNG/SVG nor calculates automatic
   graph layout. Its `export` command uploads a diagram to a sharing service.
 
 ## Authoring workflow
@@ -69,17 +70,22 @@ Follow [the shared scope and bookkeeping contract](../COMPARISON.md).
    element references, and the selected element/editor roughness values. Verify
    labels, relationships, direction, and requested content. CLI JSON parsing
    alone is not full diagram validation.
-7. Preview with an available compatible viewer/editor, inspect for clipped or
-   overlapping text and incorrect connectors, and refine concrete defects.
+7. Save a PNG/JPG view of the final CLI-generated native file, normally
+   `diagram.png`, using an available compatible viewer/editor or browser workflow.
+   Decode and inspect the image for clipped or overlapping text and incorrect
+   connectors, and refine concrete defects.
    Regenerate through the CLI when changing its authoring input, then repeat
-   finalization and validation. Disclose unavailable visual inspection; do not
-   claim the CLI rendered an image.
+   finalization, validation, and image capture. Missing preview capability is
+   `blocked`. Disclose unavailable visual inspection; do not claim the CLI itself
+   rendered an image.
 8. Honor explicit alternate output requests using a compatible exporter or
    wrapper while retaining the CLI-generated Standard source. If an export
    cannot be produced with available tools, report `blocked`, not native JSON
    presented as a completed image/animation export.
-9. Record `elements.json`, `diagram.excalidraw`, any successful requested exports,
-   and `status.json`. Use `tool: "excalidraw-cli"` and the shared status shape.
+9. Record `elements.json`, `diagram.excalidraw`, the required PNG/JPG preview,
+   any successful requested exports, and `status.json`. Use `tool: "excalidraw-cli"`
+   and the shared status shape, including `preview` and `tokens_used`.
+   Retain the preview for the HTML run summary.
    Checkpoints, logs, and technical references are supporting files, not final
    diagram artifacts.
 

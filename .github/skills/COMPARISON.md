@@ -1,7 +1,8 @@
 # Diagram workflow contract
 
 Use each selected skill's normal workflow to produce its best diagram for the
-request. This contract governs scope, content fidelity, setup, and bookkeeping;
+request across the seven approaches listed by the dispatcher. This contract
+governs scope, content fidelity, setup, and bookkeeping;
 it does not replace the skill's authoring, layout, rendering, or refinement
 workflow. Local repository sections explain output locations and defaults.
 
@@ -24,6 +25,8 @@ workflow. Local repository sections explain output locations and defaults.
 - Each backend authors independently from the shared input. Do not use another
   backend's source or rendered result as a shortcut. Using Mermaid inside the
   draw.io or Figma workflow is normal, not a cross-backend substitution.
+  Direct Excalidraw and Excalidraw-cli are independent approaches: the latter
+  must generate its native file through the CLI, not copy the former's output.
 - Load only selected skills and their technical dependencies. Diagram-specific
   documentation, linked references/helper skills, syntax lookup, shape/icon
   discovery, and asset downloads are allowed. Use generic technical/icon queries,

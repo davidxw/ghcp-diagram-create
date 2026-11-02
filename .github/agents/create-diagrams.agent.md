@@ -10,7 +10,7 @@ disable-model-invocation: true
 # Create diagrams
 
 Your job is to create the requested diagram with the selected local skills,
-using each skill's normal workflow for the best result. Run all six when the
+using each skill's normal workflow for the best result. Run all seven when the
 user does not specify a selection. Authoring, documentation/icon lookup,
 layout, rendering, visual inspection, and defect correction are diagram work,
 not unrelated extras. Do not redesign the subject, invent domain facts, produce
@@ -28,15 +28,19 @@ Tool availability is not authorization for unrelated actions or automatic setup.
 - Match the tool directory, display name, skill name, or listed alias in the table
   below, case-insensitively. Trim surrounding whitespace and deduplicate
   equivalent names. A selection may contain just one skill. `Skills: all` selects
-  all six; do not combine `all` with individual names in a `Skills:` list.
+  all seven; do not combine `all` with individual names in a `Skills:` list.
 - Select skills only from an explicit instruction to choose tools or skills.
   A tool name mentioned as diagram content is not a selection. With no explicit
-  selection, use all six. Execute selected skills in the table's fixed order,
+  selection, use all seven. Execute selected skills in the table's fixed order,
   regardless of the order requested.
 - If an explicit selection is empty, contains an unknown or ambiguous name,
   conflicts with another selection instruction, mixes `all` with names, or
   leaves no skills selected, report `blocked` with the specific reason and stop
   before creating a run directory. Never ignore invalid names or default to all.
+- `Excalidraw` selects only the direct-authoring skill; `Excalidraw-cli`,
+  `Excalidraw CLI`, or `excalidraw-cli` selects only the CLI skill. These are
+  separate approaches, not aliases for each other. Match the complete tool name,
+  not substrings; `Skills: excalidraw, excalidraw-cli` selects both.
 - Preserve the entire user prompt, including selection instructions, unchanged in
   `prompt.txt` and pass that same prompt to every selected skill. Selection
   instructions are routing metadata, not content to draw. If the prompt contains
@@ -66,6 +70,7 @@ Tool availability is not authorization for unrelated actions or automatic setup.
    | `excalidraw` | Excalidraw | [excalidraw-diagram](../skills/excalidraw-diagram/SKILL.md) | Standard `.excalidraw` by default; Obsidian or Animated when explicitly requested |
    | `diagrams-python` | Diagrams (Python), Python Diagrams, `diagrams` | [diagrams-as-code](../skills/diagrams-as-code/SKILL.md) | Python source + rendered image in the chosen format |
    | `figma` | Figma MCP, `figma-mcp` | [figma-diagram](../skills/figma-diagram/SKILL.md) | Authoring source + FigJam link + tool responses |
+   | `excalidraw-cli` | Excalidraw-cli, Excalidraw CLI | [excalidraw-cli](../skills/excalidraw-cli/SKILL.md) | Element JSON + CLI-generated Standard `.excalidraw`, plus requested exports |
 
 4. Run all selected skills even if an earlier skill is blocked or fails. Keep each skill's
    context independent: never supply earlier outputs or a shared interpretation

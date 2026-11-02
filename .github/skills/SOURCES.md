@@ -13,6 +13,7 @@ marketplace copies with unclear provenance.
 | Excalidraw | [axtonliu/axton-obsidian-visual-skills: excalidraw-diagram](https://github.com/axtonliu/axton-obsidian-visual-skills/tree/1265976d9746a84858b4b7b42fb86a215aa93de9/excalidraw-diagram) | ~3.7k stars; native Standard JSON and bundled schema | [MIT](./excalidraw-diagram/LICENSE) |
 | Diagrams (Python) | [sammcj/agentic-coding: diagrams-as-code](https://github.com/sammcj/agentic-coding/tree/03ae89e44a89c601169f5fcdd7a34ab717917dd5/Skills_disabled/diagrams-as-code) | ~167 stars; focused library API and provider reference | [Apache-2.0](./diagrams-as-code/LICENSE) |
 | Figma MCP | [Figma's official figma-generate-diagram guidance](https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-generate-diagram) | Official publisher; ~2.1k stars | No repository license declared; linked, **not copied** |
+| Excalidraw-cli | [ahmadawais/excalidraw-cli](https://github.com/ahmadawais/excalidraw-cli/tree/d62ab7af3d7e7985724e80fa64a2253771a2513a) | CLI-assisted element authoring, label shorthand, and checkpoints; separate from direct JSON authoring | MIT declared in upstream `package.json`; adapter independently written, upstream skill **not copied** |
 
 ## What was reused
 
@@ -83,6 +84,27 @@ extensions when relevant tools are available. Inspection, screenshots, supported
 refinement, and requested annotations/exports are allowed. A read/design-context
 tool is not treated as a diagram-creation API. Refinements reuse the actual
 returned file key and preserve source/scripts and tool responses.
+
+The seventh approach, [Excalidraw-cli](./excalidraw-cli/SKILL.md), is an
+independently written adapter based on the CLI interfaces and implementation at
+revision `d62ab7af3d7e7985724e80fa64a2253771a2513a`. Its upstream
+[skill](https://github.com/ahmadawais/excalidraw-cli/blob/d62ab7af3d7e7985724e80fa64a2253771a2513a/skills/skill.md)
+and [package manifest](https://github.com/ahmadawais/excalidraw-cli/blob/d62ab7af3d7e7985724e80fa64a2253771a2513a/package.json)
+are linked, not vendored, so it has no installer-generated entry in
+`skills-lock.json`. The installed CLI may differ from this reviewed revision;
+check its help and reference before use.
+
+The adapter preserves the normal create, label shorthand, checkpoint, and
+refinement workflows. The CLI must actually generate the native output;
+direct JSON authoring is not a missing-CLI fallback for this comparison.
+Local changes keep checkpoints inside the backend directory, make encrypted
+cloud sharing opt-in, and use Standard `.excalidraw` with `roughness: 0` rather
+than the CLI's default `2`. Finalization also sets generated labels' roughness
+and `appState.currentItemRoughness`, because the reviewed CLI rebuilds editor
+state and files. Its own `source: "excalidraw-cli"` is retained. The CLI does
+not provide automatic graph layout or PNG/SVG rendering; those require normal
+authoring and a compatible viewer/exporter. This compares authoring workflows,
+not two different rendering engines.
 
 ## Scope-only workflow adaptations
 

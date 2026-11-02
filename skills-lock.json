@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "skills": {
+    "architecture-diagram": {
+      "source": "Cocoon-AI/architecture-diagram-generator",
+      "ref": "4b9087d55268c79a935105439dbcd37b630fc3f3",
+      "sourceType": "github",
+      "skillPath": "architecture-diagram/SKILL.md",
+      "computedHash": "338f00f529b38a436765b62089933fae3cc156e3af22f0b4b51cf26de08c5e01"
+    },
+    "diagrams-as-code": {
+      "source": "sammcj/agentic-coding",
+      "ref": "03ae89e44a89c601169f5fcdd7a34ab717917dd5",
+      "sourceType": "github",
+      "skillPath": "Skills_disabled/diagrams-as-code/SKILL.md",
+      "computedHash": "127009542ad56b17ea28cd3f307d8bd1e52c109dced801e7c6fb5b73e33c6bb0"
+    },
+    "drawio": {
+      "source": "jgraph/drawio-mcp",
+      "ref": "30c232a35a924e193cd419013b3deb35536ec79b",
+      "sourceType": "github",
+      "skillPath": "plugins/copilot/skills/drawio/SKILL.md",
+      "computedHash": "05abbf82e6f0387400c189d8611ed2b61b124258280d53cb8b4106e954fe6c50"
+    },
+    "excalidraw-diagram": {
+      "source": "axtonliu/axton-obsidian-visual-skills",
+      "ref": "1265976d9746a84858b4b7b42fb86a215aa93de9",
+      "sourceType": "github",
+      "skillPath": "excalidraw-diagram/SKILL.md",
+      "computedHash": "030c01884bc5b1342d0b90a1a09b63181f88d8de333af719981980a2e3d9ca67"
+    },
+    "mermaid-diagrams": {
+      "source": "softaworks/agent-toolkit",
+      "ref": "3027f20f3181758385a1bb8c022d4041dfb4de84",
+      "sourceType": "github",
+      "skillPath": "skills/mermaid-diagrams/SKILL.md",
+      "computedHash": "b6c206a3cab0333a1d3d3cf27114099d0d5f25eb07d86c8f12472b7aa7d59a4c"
+    }
+  }
+}

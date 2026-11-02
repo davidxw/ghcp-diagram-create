@@ -108,6 +108,12 @@ not two different rendering engines.
 
 ## Repository workflow adaptations
 
+The ordered backend list, selection names/aliases, and skill paths live in
+[REGISTRY.md](./REGISTRY.md), not in the dispatcher. The dispatcher resolves
+default and explicit selections from that registry. The independently written
+[add-diagrams-skill agent](../agents/add-diagrams-skill.agent.md) documents the
+integration checklist and adaptation/validation process for future approaches.
+
 The [shared contract](./COMPARISON.md) keeps identical input, independent backend
 authoring, per-run output directories, honest statuses, and the requirement not
 to invent facts or do unrelated work. It allows technical documentation/icon

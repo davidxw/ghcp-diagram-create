@@ -1,11 +1,20 @@
-# ghcp-diagram-create
+# Create Diagrams with GitHub Copilot
 
-Create and compare diagrams in GitHub Copilot using the same unchanged prompt.
-Each selected skill uses its normal authoring, layout, rendering, and refinement
-workflow, rather than a restricted lowest-common-denominator route. Five
-upstream skills are vendored; Figma and Excalidraw-cli have workflow adapters,
-giving seven approaches in total. See the
-[research, sources, licenses, and adaptations](.github/skills/SOURCES.md).
+This repo can be used to compare different approaches and skills for creating diagrams with GitHub Copilot or other AI coding agents.  Diagram approaches are codified in skills, and an agent runs the same prompt against all these skills and presents the output.
+
+## Quickstart
+
+1. Review the tool list and pre-requites for each tool
+2. Use the `create-diagrams` agent with a description of your diagram to generate outputs for all selected tools and skills.
+3. Use the `add-diagrams-skill` agent to add new diagram approaches as skills to the repository.
+
+
+Each selected skill uses its normal authoring, layout, rendering, and refinement workflow. Upstream (source)
+skills and local workflow adapters provide the approaches listed in
+[the backend registry](.github/skills/REGISTRY.md). 
+
+See the
+[research, sources, licenses, and adaptations](.github/skills/SOURCES.md) for the full source list.
 
 ## Tools and prerequisites
 
@@ -88,7 +97,7 @@ hosted editors/renderers without permission.
    > and Database. Connect Client to API with an arrow labelled HTTPS.
    > Connect API to Database with an arrow labelled SQL.
 
-By default, the agent loads all seven local skills. To run a smaller comparison,
+By default, the agent loads all registered local skills. To run a smaller comparison,
 explicitly select one or more tools in the prompt:
 
 ```text
@@ -103,7 +112,7 @@ You can also write "Use only Mermaid and Excalidraw" or "Use all except Figma"
 as an explicit selection instruction. A tool name mentioned only as diagram
 content does not change the selection. Names are case-insensitive; the tool
 names above, directory names in the output layout below, and linked skill names
-are accepted. Duplicate names are run once. `Skills: all` selects all seven.
+are accepted. Duplicate names are run once. `Skills: all` selects every registered backend.
 Do not combine `all` with individual names in a `Skills:` list. An empty,
 unknown, ambiguous, or conflicting selection is reported as `blocked` before
 a run is created; it is not silently ignored.
@@ -116,7 +125,8 @@ The architecture skill retains the legacy `svg` directory and accepts the older
 names `Raw SVG` and `raw-svg`. Those names select the skill, not an output format;
 request "standalone SVG" explicitly if you want that instead of its normal HTML.
 
-The agent loads only the selected skills, in the order shown above. It saves and
+The agent loads only the selected skills, in
+[registry order](.github/skills/REGISTRY.md). It saves and
 passes the entire prompt unchanged, treating selection instructions as routing
 metadata rather than diagram content. Each skill authors independently from the
 same input, not another tool's diagram. If clarification is necessary, the answer
@@ -260,6 +270,27 @@ The Figma `.url` file is a local shortcut, not a local copy of the editable boar
 Tool responses are preserved unchanged. Refinements reuse the actual board/file
 key where supported rather than creating unnecessary cloud drafts.
 
+## Adding a new diagram approach
+
+Select [add-diagrams-skill](.github/agents/add-diagrams-skill.agent.md) in the agent
+picker and provide the drawing tool/approach plus an upstream URL or local skill.
+For example:
+
+```text
+Add a new diagram approach from <source URL or local skill path>.
+Use <display name> as its name and <backend-id> as its selection/output ID.
+```
+
+The maintenance agent contains the required/conditional file checklist and
+guidance for adapting upstream skills, preserving licenses, documenting setup,
+and checking previews/statuses. It updates
+[the registry](.github/skills/REGISTRY.md), the skill, README, and provenance
+together. The registry owns the available backend list, names/aliases, and
+execution order; adding a backend does not normally require a dispatcher edit.
+New skills must retain their normal diagram workflow and follow
+[the shared contract](.github/skills/COMPARISON.md), including the required
+PNG/JPG preview and HTML run-summary integration.
+
 ## Scope and verification
 
 The [shared contract](.github/skills/COMPARISON.md) limits the task to creating and
@@ -275,8 +306,9 @@ services, browser uploads, and command execution.
 
 To check behavior in your own Copilot environment:
 
-- Run the first three-node prompt above without a selection; expect seven status
-  files and the same three labels/two relationships wherever the backend
+- Run the first three-node prompt above without a selection; expect one status
+  file per registered backend
+  and the same three labels/two relationships wherever the backend
   succeeds, plus a retained PNG/JPG for every `created` backend and one HTML
   summary section per selected skill.
 - Use `Skills: mermaid, draw.io`; expect only two status files and two table

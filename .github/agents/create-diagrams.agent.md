@@ -10,8 +10,9 @@ disable-model-invocation: true
 # Create diagrams
 
 Your job is to create the requested diagram with the selected local skills,
-using each skill's normal workflow for the best result. Run all seven when the
-user does not specify a selection. Authoring, documentation/icon lookup,
+using each skill's normal workflow for the best result. Run every backend in
+[the skill registry](../skills/REGISTRY.md) when the user does not specify a
+selection. Authoring, documentation/icon lookup,
 layout, rendering, visual inspection, defect correction, and the required HTML
 run summary are diagram work, not unrelated extras. Do not redesign the subject,
 invent domain facts, produce domain reports or rankings, or start follow-up work.
@@ -26,22 +27,22 @@ Tool availability is not authorization for unrelated actions or automatic setup.
 - Accept an explicit `Skills:` list, for example `Skills: mermaid, draw.io`, or
   an unambiguous instruction such as "Use only Mermaid and Excalidraw." Also
   accept an explicit exclusion such as "Use all except Figma."
-- Match the tool directory, display name, skill name, or listed alias in the table
-  below, case-insensitively. Trim surrounding whitespace and deduplicate
+- Read [the skill registry](../skills/REGISTRY.md), the sole source of backend
+  names, aliases, skill paths, and execution order. Do not infer the available
+  backends from installed tools or directory scans. If the registry is missing
+  or invalid, report `blocked` with the actual problem before creating a run.
+- Match the tool directory, display name, skill name, or listed registry alias,
+  case-insensitively. Match complete names, not substrings. Trim surrounding whitespace and deduplicate
   equivalent names. A selection may contain just one skill. `Skills: all` selects
-  all seven; do not combine `all` with individual names in a `Skills:` list.
+  every registered backend; do not combine `all` with individual names in a `Skills:` list.
 - Select skills only from an explicit instruction to choose tools or skills.
   A tool name mentioned as diagram content is not a selection. With no explicit
-  selection, use all seven. Execute selected skills in the table's fixed order,
+  selection, use all registered backends. Execute selected skills in registry order,
   regardless of the order requested.
 - If an explicit selection is empty, contains an unknown or ambiguous name,
   conflicts with another selection instruction, mixes `all` with names, or
   leaves no skills selected, report `blocked` with the specific reason and stop
   before creating a run directory. Never ignore invalid names or default to all.
-- `Excalidraw` selects only the direct-authoring skill; `Excalidraw-cli`,
-  `Excalidraw CLI`, or `excalidraw-cli` selects only the CLI skill. These are
-  separate approaches, not aliases for each other. Match the complete tool name,
-  not substrings; `Skills: excalidraw, excalidraw-cli` selects both.
 - Preserve the entire user prompt, including selection instructions, unchanged in
   the HTML run summary and pass that same prompt to every selected skill. Selection
   instructions are routing metadata, not content to draw. If the prompt contains
@@ -49,8 +50,10 @@ Tool availability is not authorization for unrelated actions or automatic setup.
 
 ## Procedure
 
-1. Read [the comparison contract](../skills/COMPARISON.md). It governs every step.
-   Resolve and validate the user's selection as described above.
+1. Read [the comparison contract](../skills/COMPARISON.md) and
+   [the skill registry](../skills/REGISTRY.md). The contract governs every step;
+   the registry defines which backends can run and in what order. Resolve and
+   validate the user's selection as described above.
 2. From the diagram description, excluding selection instructions, infer a short
    (32 char max) descriptive name. Create a fresh repository-root directory
    `diagrams/<inferred name>-<8-hex-random>/`. If the path exists, generate another suffix;
@@ -59,24 +62,14 @@ Tool availability is not authorization for unrelated actions or automatic setup.
    summary replaces `prompt.txt`; do not create a separate prompt file.
    Do not paraphrase, normalize, or enrich the prompt.
    The inferred name should be a concise, human-readable summary of the diagram prompt.
-3. In this fixed order, explicitly load each **selected** local `SKILL.md` by
-   reading the linked file (do not rely on automatic skill selection), then
+3. In registry order, explicitly load each **selected** local `SKILL.md` by
+   reading its registry link (do not rely on automatic skill selection), then
    execute its normal workflow with the original prompt, any saved clarifications,
    explicitly supplied source material, and the absolute `run_dir`.
    Do not load, check prerequisites for, or create outputs for unselected skills.
    In addition to its normal deliverables, every selected skill must save a
    PNG or JPG view of its final diagram. Follow the contract's preview rules;
    native output alone is not a successful result.
-
-   | Tool directory | Display name / aliases | Skill to load | Normal deliverables |
-   |---|---|---|---|
-   | `mermaid` | Mermaid | [mermaid-diagrams](../skills/mermaid-diagrams/SKILL.md) | Mermaid source + rendered SVG or requested format |
-   | `drawio` | Draw.io | [drawio](../skills/drawio/SKILL.md) | Editable draw.io file or MCP diagram + requested exports |
-   | `svg` | Architecture HTML+SVG, HTML+SVG, Raw SVG, `raw-svg` | [architecture-diagram](../skills/architecture-diagram/SKILL.md) | HTML with inline SVG; standalone SVG or exports when requested |
-   | `excalidraw` | Excalidraw | [excalidraw-diagram](../skills/excalidraw-diagram/SKILL.md) | Standard `.excalidraw` by default; Obsidian or Animated when explicitly requested |
-   | `diagrams-python` | Diagrams (Python), Python Diagrams, `diagrams` | [diagrams-as-code](../skills/diagrams-as-code/SKILL.md) | Python source + rendered image in the chosen format |
-   | `figma` | Figma MCP, `figma-mcp` | [figma-diagram](../skills/figma-diagram/SKILL.md) | Authoring source + FigJam link + tool responses |
-   | `excalidraw-cli` | Excalidraw-cli, Excalidraw CLI | [excalidraw-cli](../skills/excalidraw-cli/SKILL.md) | Element JSON + CLI-generated Standard `.excalidraw`, plus requested exports |
 
 4. Run all selected skills even if an earlier skill is blocked or fails. Keep each skill's
    context independent: never supply earlier outputs or a shared interpretation
@@ -98,7 +91,7 @@ Tool availability is not authorization for unrelated actions or automatic setup.
 
 ## Tool boundaries
 
-- Read this contract, selected skills and their technical dependencies, run files,
+- Read the contract, registry, selected skills and their technical dependencies, run files,
   and sources explicitly supplied as diagram input. No unrelated repository or
   workplace exploration.
 - Edit only this run's HTML summary, clarifications, and skill-owned output files.
@@ -117,7 +110,7 @@ These are instruction-level boundaries. Do not claim they are sandbox enforcemen
 ## Final response
 
 Return links to the HTML run summary and run directory, followed by exactly one
-row per selected skill, in the table order above. Do not include rows for
+row per selected skill, in registry order. Do not include rows for
 unselected skills. If browser inspection of the summary was unavailable, note
 that limitation beside the summary link:
 

@@ -1,7 +1,7 @@
 # Diagram workflow contract
 
 Use each selected skill's normal workflow to produce its best diagram for the
-request across the seven approaches listed by the dispatcher. This contract
+request across the approaches listed in [the skill registry](./REGISTRY.md). This contract
 governs scope, content fidelity, setup, and bookkeeping;
 it does not replace the skill's authoring, layout, rendering, or refinement
 workflow. Local repository sections explain output locations and defaults.
@@ -163,7 +163,7 @@ workflow. Local repository sections explain output locations and defaults.
   otherwise `Not available`. Do not guess from agent configuration or a cloud
   diagram service's name. If the host reports multiple models for this run,
   list those observed models rather than choosing an assumed one.
-- Include exactly one section per selected skill in dispatcher order, showing:
+- Include exactly one section per selected skill in registry order, showing:
   tool name and status; its saved PNG/JPG via `<img>` with meaningful alt text;
   all generated artifact links from `artifacts`; and tokens used from
   `tokens_used`, or `Not available` when null. Show a nonempty `reason` for any

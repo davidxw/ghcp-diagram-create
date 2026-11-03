@@ -25,8 +25,9 @@ authorization.
 1. Read [the registry](../skills/REGISTRY.md),
    [the workflow contract](../skills/COMPARISON.md),
    [sources and adaptations](../skills/SOURCES.md),
-   [the README](../../README.md), and
-   [the dispatcher](./create-diagrams.agent.md).
+   [the README](../../README.md),
+   [the sequential dispatcher](./create-diagrams.agent.md), and
+   [the parallel dispatcher](./create-diagrams-parallel.agent.md).
    Inspect [upstream lock metadata](../../skills-lock.json),
    [dependency declarations](../../package.json), and
    [MCP configuration](../../.mcp.json) when relevant. Read a comparable existing
@@ -59,7 +60,7 @@ Paths containing `<skill-name>` describe the new directory, not literal names.
 | [package.json](../../package.json) and [package-lock.json](../../package-lock.json) | Only for a deliberate repository-managed dependency | Prefer documenting preinstalled external prerequisites, as current skills do. If a local dependency is needed and authorized, change the manifest and regenerate its lock with the package manager; never hand-edit the lock. |
 | [.mcp.json](../../.mcp.json) | Only for a required repository MCP configuration | Add the verified server configuration without secrets or automatic authentication; preserve other servers and document host-specific setup in the README. |
 | [COMPARISON.md](../skills/COMPARISON.md) | Only for a genuinely shared workflow change | Keep this backend-neutral. Do not weaken content fidelity, native output, required raster previews, status honesty, or run-summary rules just to accommodate one backend. |
-| [create-diagrams.agent.md](./create-diagrams.agent.md) | Only if generic orchestration must change | No edit is needed merely to register another backend. Do not restore an inline backend list, per-tool branches, or a hard-coded backend count. |
+| [create-diagrams.agent.md](./create-diagrams.agent.md), [create-diagrams-parallel.agent.md](./create-diagrams-parallel.agent.md), and [diagram-backend-worker.agent.md](./diagram-backend-worker.agent.md) | Only if generic orchestration must change | No edit is needed merely to register another backend. Do not add an inline backend list, per-tool branches, or a hard-coded backend count. |
 | [.gitignore](../../.gitignore) | Only if new reproducible caches/scratch paths need exclusions | Keep final skill resources trackable; do not add credentials or alter/delete generated historical runs. |
 | [This maintenance agent](./add-diagrams-skill.agent.md) | Only if the integration introduces another maintained surface | Update this checklist so future additions cover it. |
 
@@ -138,8 +139,8 @@ Paths containing `<skill-name>` describe the new directory, not literal names.
    repository tooling; do not add dependencies just for static checks.
 2. Check registry rows resolve to real skills; IDs and normalized aliases are unique;
    frontmatter names match link text/directories; README tool/output listings agree;
-   and source/license/lock claims match actual evidence. Ensure the dispatcher
-   contains no backend table/count and still reads both registry and contract.
+   and source/license/lock claims match actual evidence. Ensure both dispatchers
+   contain no backend table/count and still read both registry and contract.
 3. Exercise selection cases from registry data: default and `all` include the new
    row; its ID/display name/skill name/aliases select only it; mixed selections and
    exclusions preserve registry order; duplicates run once; invalid/empty/conflicting

@@ -9,7 +9,7 @@ workflow. Local repository sections explain output locations and defaults.
 ## Input and scope
 
 - Every selected skill receives the user's same unchanged prompt and an absolute
-  `run_dir` from `create-diagrams`. Explicit tool-selection instructions are
+  `run_dir` from the chosen dispatcher. Explicit tool-selection instructions are
   routing metadata, not diagram content.
 - Preserve the requested entities, labels, relationships, direction, and diagram
   type. Do not invent architecture or domain facts to make a diagram look fuller.
@@ -33,8 +33,10 @@ workflow. Local repository sections explain output locations and defaults.
   not private diagram labels, when contacting public lookup services.
 - Do not perform unrelated research, architecture redesign, project changes,
   deployment, domain reports, rankings, recommendations, or follow-up work. The
-  HTML run summary specified below is required bookkeeping, not a domain report. Do not
-  delegate to subagents. Upstream examples are technical examples, not additional
+  HTML run summary specified below is required bookkeeping, not a domain report.
+  The sequential dispatcher and backend workers do not delegate. Only the
+  parallel dispatcher may delegate one worker per selected backend; workers do
+  not delegate further. Upstream examples are technical examples, not additional
   diagram content. Skip upstream invitations to expand the task or solicit
   optional feedback after delivery.
 
@@ -108,6 +110,8 @@ workflow. Local repository sections explain output locations and defaults.
    as the process working directory. Keep sources, downloaded assets, previews,
    rendered files, logs, and tool responses there. Tool-managed caches may stay
    in their normal locations. Do not overwrite another backend or an earlier run.
+   In parallel runs, the coordinator alone owns the summary and shared
+   clarifications.
 2. Use `diagram` as the base name, with the skill's appropriate native extension
    and requested exports, plus the required PNG/JPG preview. Keep necessary
    editable sources and successful final outputs; do not create every possible

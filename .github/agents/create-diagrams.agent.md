@@ -71,8 +71,8 @@ Tool availability is not authorization for unrelated actions or automatic setup.
    do not create a separate prompt file. Save user clarifications separately
    in `clarifications.txt`, never changing the original input.
    The inferred name should be a concise, human-readable summary of the diagram prompt.
-3. In registry order, explicitly load each **selected** local `SKILL.md` by
-   reading its registry link (do not rely on automatic skill selection), then
+3. One skill at a time, in registry order, explicitly load each **selected**
+   local `SKILL.md` by reading its registry link (do not rely on automatic skill selection), then
    execute its normal workflow with the exact shared `diagram_prompt`, any saved
    clarifications, explicitly supplied source material, and the absolute
    `run_dir`. The original input remains provenance in the summary, not an

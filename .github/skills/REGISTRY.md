@@ -1,13 +1,11 @@
 # Diagram skill registry
 
 This is the single source of truth for the available diagram backends, selection
-names, and execution order. [The sequential dispatcher](../agents/create-diagrams.agent.md)
-and [the parallel dispatcher](../agents/create-diagrams-parallel.agent.md) read
-this file before resolving a selection. Every row participates in the
+names, and execution order. [The dispatcher](../agents/create-diagrams.agent.md)
+reads this file before resolving a selection. Every row participates in the
 default selection and `Skills: all`; do not infer backends from directory scans,
-the README, or installed tools. The sequential dispatcher executes selected rows
-in the order below. The parallel dispatcher starts them in that order but may
-run them concurrently; both report results in registry order.
+the README, or installed tools. The dispatcher executes selected rows one at a
+time and reports results in the order below.
 
 ## Registered backends
 

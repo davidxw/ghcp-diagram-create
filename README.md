@@ -25,7 +25,7 @@ Customizations.
 ## Tools and prerequisites
 
 Install or configure prerequisites before starting an evaluation. You only need
-setup for the tools you select; the agents do not install dependencies or
+setup for the tools you select; the diagram agent does not install dependencies or
 authenticate services for you.
 
 | Tool / skill | Approach | Prerequisites |
@@ -51,13 +51,20 @@ is on PATH. Enable your host's browser tools for visual inspection and exports.
 
 ## Usage
 
-Choose an execution mode, then submit a detailed description or a high-level
-diagram request. Each selected skill receives the same prepared description.
-Request a particular export format in the prompt if needed.
+Select [create-diagrams](.github/agents/create-diagrams.agent.md) and submit a
+detailed description or a high-level diagram request. The agent runs selected
+skills one at a time, using the same prepared description. Request a particular
+export format in the prompt if needed.
+
+In Copilot CLI:
+
+```powershell
+copilot --agent create-diagrams -i "Create a flowchart: Client -> API -> Database."
+```
 
 ### Shared prompt preparation
 
-Both agents check your prompt once before running tools. Detailed prompts stay
+The agent checks your prompt once before running tools. Detailed prompts stay
 unchanged. High-level requests become one clearer description that keeps your
 requirements and uses established facts, without a separate approval step.
 The agent asks about important missing details rather than inventing them;
@@ -71,28 +78,9 @@ answer changes the description, all selected tools rerun.
 See [the preparation contract](.github/skills/COMPARISON.md#shared-prompt-pre-evaluation)
 for details.
 
-### Single-stream execution
-
-Select the [create-diagrams](.github/agents/create-diagrams.agent.md) agent to run selected
-skills one at a time. This is the simplest way to start an evaluation.
-
-### Parallel execution
-
-Select [create-diagrams-parallel](.github/agents/create-diagrams-parallel.agent.md)
-to run a worker for each selected skill. In VS Code, enable **Run Subagent** in
-**Configure Tools**. In Copilot CLI, use fleet mode:
-
-```powershell
-copilot --agent create-diagrams-parallel --fleet -i "Create a flowchart: Client -> API -> Database."
-```
-
-Parallel execution requires host subagent support. Actual concurrency depends
-on the host and available tools; the agent reports any sequential fallback.
-Subagents can increase model usage.
-
 ### Selecting tools
 
-Both modes use all registered tools by default. Add a selection to your prompt
+The agent uses all registered tools by default. Add a selection to your prompt
 to evaluate a subset:
 
 ```text

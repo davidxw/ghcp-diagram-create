@@ -38,16 +38,15 @@ workflow. Local repository sections explain output locations and defaults.
 - Do not perform unrelated research, architecture redesign, project changes,
   deployment, domain reports, rankings, recommendations, or follow-up work. The
   HTML run summary specified below is required bookkeeping, not a domain report.
-  The sequential dispatcher and backend workers do not delegate. Only the
-  parallel dispatcher may delegate one worker per selected backend; workers do
-  not delegate further. Upstream examples are technical examples, not additional
+  Do not invoke subagents. Run selected backends one at a time in registry order.
+  Upstream examples are technical examples, not additional
   diagram content. Skip upstream invitations to expand the task or solicit
   optional feedback after delivery.
 
 ## Shared prompt pre-evaluation
 
-1. After validating selection and, for parallel execution, worker availability,
-   evaluate `original_prompt` and any explicitly supplied sources once in the
+1. After validating selection, evaluate `original_prompt` and any explicitly
+   supplied sources once in the
    dispatcher, before loading or running selected backends. Do not delegate
    preparation to a backend or use a backend's output to define the description.
 2. Check whether the request specifies enough content to keep the intended
@@ -88,7 +87,7 @@ workflow. Local repository sections explain output locations and defaults.
    layout, rendering, and repair; they must not independently expand the content.
 7. If a backend later discovers a material ambiguity, record it as `blocked`
    and retain its focused question. Continue the current pass for the remaining
-   selected backends; in parallel, wait for every started worker to be terminal.
+   selected backends.
    The dispatcher then asks any required clarification. If answered, update the
    shared description once, recheck it, update the summary and clarifications,
    and invalidate all selected backends' old `status.json` files before rerunning

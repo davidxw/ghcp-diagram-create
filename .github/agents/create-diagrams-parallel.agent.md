@@ -1,6 +1,6 @@
 ---
 name: create-diagrams-parallel
-description: "Create diagrams with independent backend workers in parallel, retaining the shared previews, statuses, and HTML run summary."
+description: "Prepare one consistent diagram description, then run independent backend workers in parallel, retaining previews, statuses, and an HTML summary with original and prepared prompts."
 argument-hint: "A self-contained diagram prompt; optionally specify Skills: mermaid, drawio."
 agents: ['diagram-backend-worker']
 user-invocable: true
@@ -33,16 +33,24 @@ setup, authentication, or uploads.
    worker, not a substitute agent. In VS Code Local, the `agents` allowlist
    restricts workers; other harnesses may ignore that field, so the instruction
    still applies.
-4. Resolve material content ambiguities with the user before dispatch when
-   possible. Never invent domain facts. Save answers separately and give every
-   worker the same answers; selection instructions are routing metadata.
+4. Perform the contract's
+   [shared prompt pre-evaluation](../skills/COMPARISON.md#shared-prompt-pre-evaluation)
+   once in the coordinator, before dispatch. Keep `original_prompt` unchanged;
+   use it verbatim as `diagram_prompt` if sufficiently concrete, otherwise
+   generate one grounded, backend-neutral description. Resolve material
+   ambiguities with the user, save answers separately, and incorporate them
+   consistently. A grounded expansion proceeds without separate approval.
+   Block unresolved preparation before creating a run. Never delegate this step
+   to a worker; selection instructions remain routing metadata.
 5. Create a fresh `diagrams/<inferred-name>-<8-hex-random>/` at the repository
    root, with an atomic unique directory creation; retry on collision. The name
    is a human-readable description of at most 32 characters, excluding selection
    instructions. Never reuse an earlier run. Create UTF-8 `index.html` immediately
-   with the entire exact original prompt as escaped text in `<pre id="prompt">`
-   and the actual model only if exposed by the host. Save any clarifications in
-   `clarifications.txt`, without changing the prompt.
+   with the entire exact `original_prompt` as escaped text in `<pre id="prompt">`
+   and the exact `diagram_prompt` in `<pre id="diagram-prompt">`. Always include
+   both blocks, even when identical, plus the preparation outcome/explanation
+   and the actual model only if exposed by the host. Save any clarifications
+   in `clarifications.txt`, without changing the original input.
 
 ## Dispatch
 
@@ -54,9 +62,12 @@ setup, authentication, or uploads.
   limitation; do not claim parallel execution.
 - Give each worker a self-contained assignment containing the canonical backend
   ID and display name, the absolute path of its linked `SKILL.md`, the absolute
-  `run_dir` and its own output directory. Pass the entire original user prompt
-  unchanged and every saved clarification, plus any sources explicitly supplied
-  as diagram input. Do not pass another backend's interpretation, outputs, or results.
+  `run_dir` and its own output directory. Pass the exact same shared
+  `diagram_prompt` unchanged and every saved clarification, plus any sources
+  explicitly supplied as diagram input. The original input remains provenance
+  in the summary, not an alternative drawing specification. Do not pass another
+  backend's interpretation, outputs, or results, or let a worker independently
+  expand the subject content.
 - Track each worker's identity and completion. Continue starting and collecting
   the remaining workers if any worker is blocked or fails. Do not finalize the
   run or inspect the summary in a shared browser until all started workers are
@@ -66,15 +77,20 @@ setup, authentication, or uploads.
   not be mistaken for an earlier success.
 - A worker that discovers a material ambiguity returns its question and records
   `blocked`. After all workers stop, ask the user a focused question if needed.
-  If answered, save it and rerun **all selected** workers with the same original
-  prompt and updated clarifications, reusing each worker's own existing inputs
-  and cloud diagram when refining. If clarification is declined, keep the
-  affected results blocked instead of inventing an answer.
+  If answered, save it, revise and recheck the shared description once, and
+  update the summary's prepared prompt and preparation outcome/explanation,
+  leaving the original input unchanged. Invalidate every selected backend's
+  old status before rerunning **all selected** workers with the exact updated
+  `diagram_prompt` and clarifications, reusing each worker's own existing
+  inputs and cloud diagram when refining. Never finalize results from an earlier
+  description as current. If clarification is declined, leave the description
+  unchanged and keep the affected results blocked instead of inventing an answer.
 
 ## Resource isolation
 
-- Workers own only their backend directories; the coordinator alone writes the
-  summary and shared clarifications. Temporary servers must use distinct or
+- Workers own only their backend directories; the coordinator alone prepares
+  the shared description and writes the summary and shared clarifications.
+  Temporary servers must use distinct or
   automatically assigned ports and be stopped by their owning worker.
 - Workers use task-owned browser/editor targets and explicit target IDs where
   supported. Do not serialize independent workers preemptively. Report actual
@@ -89,15 +105,17 @@ setup, authentication, or uploads.
    the contract's `failed` status with the actual launch, worker, discrepancy,
    or status-validation error. Do not infer success from partial or stale files.
    Preserve diagnostics and partial files.
-2. Validate requested content, native outputs, requested exports, status shape,
+2. Validate content against the shared description and original requirements,
+   native outputs, requested exports, status shape,
    artifact paths, and the retained decoded PNG/JPG preview. Use `created` only
    when all contract requirements pass; disclose unavailable visual inspection
    and other material limitations. Never fabricate model or token usage.
 3. Finalize `index.html` from the selected status files in registry order.
    Follow every HTML, escaping, image, cloud-link, token, and verification rule in
-   the contract. Verify the exact decoded prompt, section count/order, model and
-   token metadata, previews, and links. Inspect the summary in a browser if
-   available; disclose if this was unavailable.
+   the contract. Verify both exact decoded prompt blocks, the description
+   actually used by every worker, preparation outcome/explanation, section
+   count/order, model and token metadata, previews, and links. Inspect the
+   summary in a browser if available; disclose if this was unavailable.
 4. Return links to `index.html` and the run directory, followed by exactly one
    row per selected skill in registry order:
 

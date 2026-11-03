@@ -105,9 +105,11 @@ Paths containing `<skill-name>` describe the new directory, not literal names.
 - Link `../COMPARISON.md` and `../SOURCES.md`. Work in `run_dir/<backend-id>/`
   with that directory as the process working directory. Keep inputs, checkpoints,
   assets, outputs, logs, and diagnostics there; do not use another backend's work.
-- Use the unchanged shared prompt, any saved clarifications, and supplied input
-  sources. Preserve all requested content and do not invent facts. Technical/icon
-  lookup and supported layout/refinement are allowed; stop when checks pass.
+- Use the exact shared `diagram_prompt` prepared by the dispatcher, any saved
+  clarifications, and supplied input sources. Do not independently expand the
+  subject or reinterpret the original prompt. Preserve all requested content
+  and do not invent facts. Technical/icon lookup and supported layout/refinement
+  are allowed; stop when checks pass.
 - Document executable/service detection, supported versions/capabilities, native
   defaults, and export limitations. Use preinstalled tools and configured services.
   Do not download dependencies or container images, reconfigure the machine, or
@@ -123,7 +125,8 @@ Paths containing `<skill-name>` describe the new directory, not literal names.
   Missing setup/capability is `blocked`; unresolved execution/validation errors are
   `failed`. Both use `artifacts: []` and `preview: null`, retaining partial files
   and useful diagnostics in `error.txt`. Exact attributable tokens or `null` only.
-- The dispatcher owns `run_dir/index.html`, the exact saved prompt, selected-skill
+- The dispatcher owns `run_dir/index.html`, both the exact original input and
+  shared prepared description, preparation outcome/explanation, selected-skill
   sections, model metadata, and relative preview/artifact links. The backend
   supplies its status and retained preview, not a replacement run summary.
   Follow the shared cleanup rules; never remove final previews.

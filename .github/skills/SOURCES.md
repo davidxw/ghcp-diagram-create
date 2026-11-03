@@ -12,7 +12,6 @@ marketplace copies with unclear provenance.
 | Architecture HTML+SVG | [Cocoon-AI/architecture-diagram-generator](https://github.com/Cocoon-AI/architecture-diagram-generator/tree/4b9087d55268c79a935105439dbcd37b630fc3f3/architecture-diagram) | ~7.5k stars; HTML template and inline SVG design rules | [MIT](./architecture-diagram/LICENSE) |
 | Excalidraw | [axtonliu/axton-obsidian-visual-skills: excalidraw-diagram](https://github.com/axtonliu/axton-obsidian-visual-skills/tree/1265976d9746a84858b4b7b42fb86a215aa93de9/excalidraw-diagram) | ~3.7k stars; native Standard JSON and bundled schema | [MIT](./excalidraw-diagram/LICENSE) |
 | Diagrams (Python) | [sammcj/agentic-coding: diagrams-as-code](https://github.com/sammcj/agentic-coding/tree/03ae89e44a89c601169f5fcdd7a34ab717917dd5/Skills_disabled/diagrams-as-code) | ~167 stars; focused library API and provider reference | [Apache-2.0](./diagrams-as-code/LICENSE) |
-| Figma MCP | [Figma's official figma-generate-diagram guidance](https://github.com/figma/mcp-server-guide/tree/f3f264d9cbae059d9b96289ee33ce444b5c8e7e6/skills/figma-generate-diagram) | Official publisher; ~2.1k stars | No repository license declared; linked, **not copied** |
 | Excalidraw-cli | [ahmadawais/excalidraw-cli](https://github.com/ahmadawais/excalidraw-cli/tree/d62ab7af3d7e7985724e80fa64a2253771a2513a) | CLI-assisted element authoring, label shorthand, and checkpoints; separate from direct JSON authoring | MIT declared in upstream `package.json`; adapter independently written, upstream skill **not copied** |
 
 ## What was reused
@@ -76,16 +75,7 @@ with other tools rather than Excalidraw's usual sketchy default. The mapping is
 defined in Excalidraw's [roughness constants](https://github.com/excalidraw/excalidraw/blob/master/packages/common/src/constants.ts)
 and [sloppiness control](https://github.com/excalidraw/excalidraw/blob/master/packages/excalidraw/actions/actionProperties.tsx).
 
-The Figma skill remains an independently written adapter because the official
-guidance did not declare a redistribution license; its guides are linked, not
-copied. It follows the official generator and type-specific guidance, including
-architecture layout when compatible with the supplied graph and hybrid FigJam
-extensions when relevant tools are available. Inspection, screenshots, supported
-refinement, and requested annotations/exports are allowed. A read/design-context
-tool is not treated as a diagram-creation API. Refinements reuse the actual
-returned file key and preserve source/scripts and tool responses.
-
-The seventh approach, [Excalidraw-cli](./excalidraw-cli/SKILL.md), is an
+The [Excalidraw-cli](./excalidraw-cli/SKILL.md) approach is an
 independently written adapter based on the CLI interfaces and implementation at
 revision `d62ab7af3d7e7985724e80fa64a2253771a2513a`. Its upstream
 [skill](https://github.com/ahmadawais/excalidraw-cli/blob/d62ab7af3d7e7985724e80fa64a2253771a2513a/skills/skill.md)
@@ -114,22 +104,30 @@ default and explicit selections from that registry. The independently written
 [add-diagrams-skill agent](../agents/add-diagrams-skill.agent.md) documents the
 integration checklist and adaptation/validation process for future approaches.
 
-The [shared contract](./COMPARISON.md) keeps identical input, independent backend
-authoring, per-run output directories, honest statuses, and the requirement not
-to invent facts or do unrelated work. It allows technical documentation/icon
+The [shared contract](./COMPARISON.md) prepares one shared description before
+backend execution: detailed prompts remain verbatim; well-defined high-level
+requests are expanded once using grounded subject analysis, with focused
+clarification for material ambiguities. All selected backends use that exact
+description, including after clarification-driven reruns, while native authoring
+remains independent. Per-run output directories, honest statuses, and the
+requirement not to invent facts or do unrelated work remain unchanged.
+It allows technical documentation/icon
 lookup, each skill's native output modes, conversion, automatic layout/routing,
 browser/editor inspection, temporary preview servers, repair, and refinement.
 There is no one-attempt limit or prohibition on normal diagram exports.
 Every successful backend now retains a validated PNG/JPG view alongside its
 native output. The dispatcher creates `index.html` instead of `prompt.txt`,
-preserving the exact prompt and summarizing statuses, previews, artifact links,
-and actual model/token metadata only when the host exposes it.
+preserving both the exact original prompt and the shared diagram prompt used,
+recording whether preparation was verbatim or expanded and why, and summarizing
+statuses, previews, artifact links, and actual model/token metadata only when
+the host exposes it.
 
 As requested, tools must be preinstalled and services authenticated before a
 run; upstream install snippets and dependency-resolving launch commands are
 setup guidance, not authorization to install packages during diagram creation.
-Only explicitly supplied content sources are investigated. Unrelated domain
-research, architecture redesign, project changes, domain reports, recommendations,
+Only explicitly supplied private content sources and relevant public
+documentation are investigated for the shared description or diagram workflow.
+Unrelated domain research, architecture redesign, project changes, domain reports, recommendations,
 and optional follow-up work remain excluded. Temporary preview processes are
 stopped at completion. Sources and successful final outputs are retained, and
 unsupported requests or reduced capabilities are reported rather than hidden.
@@ -143,7 +141,6 @@ enforcement, and do not bypass the host's approvals or service availability.
 
 - [VS Code custom agents and tool allowlists](https://code.visualstudio.com/docs/agent-customization/custom-agents)
 - [VS Code skill loading and directory structure](https://code.visualstudio.com/docs/agent-customization/agent-skills)
-- [Figma MCP server guide](https://github.com/figma/mcp-server-guide)
 - [Mermaid CLI](https://github.com/mermaid-js/mermaid-cli)
 - [Diagrams library](https://diagrams.mingrammer.com/)
 

@@ -18,7 +18,6 @@ run them concurrently; both report results in registry order.
 | `svg` | Architecture HTML+SVG, HTML+SVG, Raw SVG, `raw-svg` | [architecture-diagram](./architecture-diagram/SKILL.md) | HTML with inline SVG; standalone SVG or exports when requested |
 | `excalidraw` | Excalidraw | [excalidraw-diagram](./excalidraw-diagram/SKILL.md) | Standard `.excalidraw` by default; Obsidian or Animated when explicitly requested |
 | `diagrams-python` | Diagrams (Python), Python Diagrams, `diagrams` | [diagrams-as-code](./diagrams-as-code/SKILL.md) | Python source + rendered image in the chosen format |
-| `figma` | Figma MCP, `figma-mcp` | [figma-diagram](./figma-diagram/SKILL.md) | Authoring source + FigJam link + tool responses |
 | `excalidraw-cli` | Excalidraw-cli, Excalidraw CLI | [excalidraw-cli](./excalidraw-cli/SKILL.md) | Element JSON + CLI-generated Standard `.excalidraw`, plus requested exports |
 
 These are native/default deliverables, not the complete success criteria.

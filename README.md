@@ -1,8 +1,7 @@
 # Create Diagrams with GitHub Copilot
 
-Evaluate diagram-generation skills by running the same prompt through different
-tools, then reviewing their diagrams side by side. Use GitHub Copilot in VS Code
-or Copilot CLI.
+Compare diagram-generation skills using the same description, then review their
+diagrams side by side. Use GitHub Copilot in VS Code or Copilot CLI.
 
 ## Quick Start
 
@@ -36,7 +35,6 @@ authenticate services for you.
 | [Architecture HTML+SVG](.github/skills/architecture-diagram/SKILL.md) | Native HTML with inline SVG | Modern browser and browser tooling for inspection/export; internet access for optional fonts and CDN export libraries |
 | [Excalidraw](.github/skills/excalidraw-diagram/SKILL.md) | Native JSON authoring | Compatible Excalidraw viewer/exporter or browser workflow for image previews |
 | [Diagrams (Python)](.github/skills/diagrams-as-code/SKILL.md) | Python code + Graphviz | Python environment containing `diagrams`, plus Graphviz (`dot`) |
-| [Figma MCP](.github/skills/figma-diagram/SKILL.md) | FigJam through MCP | Authenticated official Figma MCP server with `generate_diagram`, plus image export or browser access for previews |
 | [Excalidraw-cli](.github/skills/excalidraw-cli/SKILL.md) | JSON + CLI authoring | Node.js 18+ and `excalidraw-cli`; a separate compatible viewer/exporter is needed for image previews |
 
 Example installations on Windows; choose only what you need:
@@ -51,16 +49,27 @@ python -m pip install diagrams
 After installing Graphviz, restart your terminal or VS Code if needed so `dot`
 is on PATH. Enable your host's browser tools for visual inspection and exports.
 
-The [MCP configuration](.mcp.json) includes the official Figma endpoint. If your
-host does not load it, add the server through its MCP controls and authenticate
-before running. Figma creates cloud diagrams and sends diagram content to its
-service; local rendering does not require a diagram upload.
-
 ## Usage
 
-Choose an execution mode, then submit a prompt describing the diagram type,
-direction, nodes, and labelled connections. Each selected skill receives the same
-input. Request a particular export format in the prompt if needed.
+Choose an execution mode, then submit a detailed description or a high-level
+diagram request. Each selected skill receives the same prepared description.
+Request a particular export format in the prompt if needed.
+
+### Shared prompt preparation
+
+Both agents check your prompt once before running tools. Detailed prompts stay
+unchanged. High-level requests become one clearer description that keeps your
+requirements and uses established facts, without a separate approval step.
+The agent asks about important missing details rather than inventing them;
+unresolved required answers block the run.
+
+For example, a TCP handshake request can become a client/server sequence showing
+SYN, SYN-ACK, and ACK in order, without data transfer or teardown.
+
+Every tool draws the same content using its own authoring and layout. If a later
+answer changes the description, all selected tools rerun.
+See [the preparation contract](.github/skills/COMPARISON.md#shared-prompt-pre-evaluation)
+for details.
 
 ### Single-stream execution
 
@@ -90,7 +99,7 @@ to evaluate a subset:
 Skills: mermaid, drawio, excalidraw
 ```
 
-You can also use `Skills: all` or write "Use all except Figma". Do not combine
+You can also use `Skills: all` or write "Use all except Mermaid". Do not combine
 `all` with individual names. Names are case-insensitive; see the
 [registry](.github/skills/REGISTRY.md) for accepted names and aliases.
 `Excalidraw` and `Excalidraw-cli` are separate approaches.
@@ -100,11 +109,11 @@ You can also use `Skills: all` or write "Use all except Figma". Do not combine
 Each evaluation creates a fresh folder under `diagrams/<name>-<random-suffix>/`
 with:
 
-- **`index.html`:** the prompt, diagram previews, artifact links, and each tool's
-  status. Model and token usage are shown when available.
+- **`index.html`:** both exact prompts (even if identical), whether the prompt
+  changed and why, previews, artifact links, tool statuses, and model/token usage
+  when available.
 - **One folder per selected tool:** editable/native sources, a PNG/JPG preview,
-  requested exports, and status or error details. Figma outputs include a link
-  to the editable cloud board.
+  requested exports, and status or error details.
 
 Open the summary locally to review the results. A tool is reported as `created`,
 `blocked` when setup or capabilities are missing, or `failed` when an error
